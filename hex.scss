@@ -1,10 +1,20 @@
 body {
   background-color: lightblue;
   font-family: "Consolas";
+  background-image: url(./images/HexTrimmed.png);
+  background-size: 1000px;
+  animation: marquee 30s linear 0s infinite;
+}
+#main-menu {
+  background-color: lightblue;
+  margin-top: 40%;
+  padding: 10px;  
 }
 #title {
   font-size: 108px;
-  margin-top: 40%;
+}
+#subtitle {
+  animation: slow-blink 4s ease-in-out 0s infinite;
 }
 
 @keyframes slow-blink {
@@ -12,6 +22,7 @@ body {
   50% {opacity: 30%;}
   100% {opacity: 100%;}
 }
-#subtitle {
-  animation: slow-blink 4s ease-in-out 0s infinite;
+@keyframes marquee {
+  0% {background-position-y: 0;}
+  100% {background-position-y: 1000px;}  
 }
