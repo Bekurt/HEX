@@ -3,12 +3,13 @@ body {
   font-family: "Consolas";
   background-image: url(./images/HexTrimmed.png);
   background-size: 1000px;
+  background-position-y: -5px;
   animation: marquee 30s linear 0s infinite;
 }
 
 #main-menu {
   background-color: lightblue;
-  margin-top: 40%;
+  margin-top: 40vh;
   padding: 10px;
 }
 
@@ -33,9 +34,9 @@ body {
 }
 @keyframes marquee {
   0% {
-    background-position-y: 0;
+    background-position-x: 0;
   }
   100% {
-    background-position-y: 1000px;
+    background-position-x: 1000px;
   }
 }/*# sourceMappingURL=hex.css.map */
