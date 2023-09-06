@@ -1,3 +1,24 @@
 body {
-  background-color: lightgrey;
+  background-color: lightblue;
+  font-family: "Consolas";
+}
+
+#title {
+  font-size: 108px;
+  margin-top: 40%;
+}
+
+@keyframes slow-blink {
+  0% {
+    opacity: 100%;
+  }
+  50% {
+    opacity: 30%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+#subtitle {
+  animation: slow-blink 4s ease-in-out 0s infinite;
 }/*# sourceMappingURL=hex.css.map */
