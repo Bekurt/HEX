@@ -9,8 +9,22 @@ body {
 
 #main-menu {
   background-color: lightblue;
-  margin-top: 40vh;
-  padding: 10px;
+  margin-top: 35vh;
+  width: 120%;
+  margin-left: -10%;
+  height: 250px;
+  border: 1px solid black;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+}
+
+a:hover {
+  color: black;
 }
 
 #title {
@@ -19,6 +33,19 @@ body {
 
 #subtitle {
   animation: slow-blink 4s ease-in-out 0s infinite;
+}
+
+#title-wrapper, #player-select, #difficulty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 250px;
+  padding: 10px 0;
+}
+
+button.btn {
+  width: 300px;
 }
 
 @keyframes slow-blink {

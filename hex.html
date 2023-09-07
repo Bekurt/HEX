@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,12 +14,32 @@
   <!-- https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.0/redux.min.js
   https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/umd/react.production.min.js
   https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.4.2/umd/react-dom.production.min.js
-  https://cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.7/react-redux.min.js --> 
+  https://cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.7/react-redux.min.js -->
 </head>
-<body>
+
+<body onload="addEvents()">
   <main id="main-menu" class="container-fluid">
-    <h1 id="title" class="text-center">HEX</h1>
-    <h6 id="subtitle" class="text-center"><em>Press a button to start</em></h6>
+    <a href="#player-select">
+      <section id="title-wrapper">
+        <h1 id="title" class="text-center">HEX</h1>
+        <h6 id="subtitle" class="text-center"><em>Click to start</em></h6>
+      </section>
+    </a>
+    <a href="#difficulty">
+      <div id="player-select" class="container">
+        <button type="button" id="select-1" class="btn btn-info">1 Player</button>
+        <button type="button" id="select-2" class="btn btn-info">2 Players</button>
+      </div>
+    </a>
+    <div id="difficulty" class="container">
+      <button type="button" id="select-easy" class="btn btn-info">Easy (5x5)</button>
+      <button type="button" id="select-normal" class="btn btn-info">Normal (7x7)</button>
+      <button type="button" id="select-hard" class="btn btn-info">Hard (11x11)</button>
+      <a href="#player-select">
+        <button type="button" id="select-hard" class="btn btn-warning">Back</button>
+      </a>
+    </div>
   </main>
 </body>
+
 </html>
