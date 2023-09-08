@@ -1,30 +1,87 @@
+//Define the default state of the Redux store
+let defaultMenuState = {
+  playerNumber: 0,
+  boardSize: 7,
+};
+let defaultGameState = {
+  turn: 0,
+  currentPlayer: "Blue"
+};
+
+// Definition of all the action types
+const NUMBER = "Set the number of players";
+const BOARD = "Set the size of the board";
+const TURN = "Advances to next turn";
+
+//Actions
+const setPlayerNumber = (int) => ({ type: NUMBER, value: int });
+const setBoardSize = (int) => ({ type: BOARD, value: int });
+const nextTurn = () => ({type: TURN});
+
+//Reducers
+const menuReducer = (state = defaultMenuState, action) => {
+  switch (action.type) {
+    case NUMBER:
+      return {
+        playerNumber: action.value,
+        boardSize: state.boardSize
+      };
+    case BOARD:
+      return {
+        playerNumber: state.playerNumber,
+        boardSize: action.value
+      };
+    default:
+      return state;
+  };
+};
+
+const gameReducer = (state = defaultGameState, action) => {
+  switch (action.type) {
+    case TURN:
+      return {
+        turn: state.turn + 1,
+        currentPlayer: state.currentPlayer == "Blue" ? "Red" : "Blue"
+      };
+    default:
+      return state;
+  }
+};
+
+const rootReducer = Redux.combineReducers({menu: menuReducer, game: gameReducer});
+
+//Store
+const store = Redux.createStore(rootReducer);
+
+const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
+
+//Assign events to DOM components (Called upon body loaded)
 function addEvents() {
-  //Gets to next menu by toggling element visibility
   $("#select-1").click(() => {
-    return playerNumber = 1;
+    store.dispatch(setPlayerNumber(1));
   });
   $("#select-2").click(() => {
-    return playerNumber = 2;
+    store.dispatch(setPlayerNumber(2));
   });
   $("#select-easy").click(() => {
-    boardSize = 5
-    makeGame(boardSize, playerNumber);
+    store.dispatch(setBoardSize(5));
+    let size = store.getState().menu.boardSize;
+    makeGame(size);
   });
   $("#select-normal").click(() => {
-    boardSize = 7;
-    makeGame(boardSize, playerNumber);
+    store.dispatch(setBoardSize(7));
+    let size = store.getState().menu.boardSize;
+    makeGame(size);
   });
   $("#select-hard").click(() => {
-    boardSize = 11;
-    makeGame(boardSize, playerNumber);
+    store.dispatch(setBoardSize(11));
+    let size = store.getState().menu.boardSize;
+    makeGame(size);
   });
 }
 
-let playerNumber = 0;
-let boardSize = 7;
-let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
-
-function makeGame(size = 7, player = 1) {
+//Funcion to setup the board and ready for the game
+function makeGame(size = 7) {
   //Switch to game view
   $("body").css("background-image", "none");
   $("#main-menu").toggleClass("hidden");
@@ -112,31 +169,47 @@ function makeGame(size = 7, player = 1) {
       .attr("x", (i * RAD3 + RAD3 / 8) * tileSide)
       .attr("y", "0")
       .html(columnList[i])
-      .style("font-size",`${11 / size}em`);
+      .style("font-size", `${11 / size}em`);
 
     //Column denomination (bottom)
     svg.append("text")
       .attr("x", RAD3 * (i + 3 / 8 + size / 2) * tileSide)
       .attr("y", tileSide * ((size - 1) * 1.5 + 2.2))
       .html(columnList[i])
-      .style("font-size",`${11 / size}em`);
+      .style("font-size", `${11 / size}em`);
 
     //Row denomination (left)
     svg.append("text")
       .attr("x", (RAD3 / 2 * i - 1) * tileSide)
       .attr("y", (1.5 * i + 1.1) * tileSide)
       .html(i + 1)
-      .style("font-size",`${11 / size}em`);
+      .style("font-size", `${11 / size}em`);
 
     //Row denomination (right)
     svg.append("text")
       .attr("x", (RAD3 / 2 * i + 0.5 + RAD3 * size) * tileSide)
       .attr("y", (1.5 * i + 1.1) * tileSide)
       .html(i + 1)
-      .style("font-size",`${11 / size}em`);
+      .style("font-size", `${11 / size}em`);
   };
 };
 
+// Callback for clicking a cell: colors it based on current player and advances the game
 function assignColor(event) {
-  event.target.style["fill"] = "blue";
+  let source = event.target;
+  let gameState = store.getState().game;
+  switch (gameState.currentPlayer) {
+    case "Blue":
+      source.style["fill"] = "royalblue";
+      break;
+    case "Red":
+      source.style["fill"] = "firebrick";
+      break;
+  }
+  source.onclick = "";
+  nextMove();
+}
+
+function nextMove() {
+  store.dispatch(nextTurn());
 }
