@@ -4,7 +4,7 @@ body {
   background-image: url(./images/HexTrimmed.png);
   background-size: 1000px;
   background-position-y: -5px;
-  // animation: marquee 30s linear 0s infinite;
+  animation: marquee 30s linear 0s infinite;
   overflow: hidden;
 }
 #main-menu {
@@ -43,8 +43,11 @@ a:hover {
 button.btn {
   width: 300px;
 }
-#game-board, #move-history {
-  border: 1px solid black;
+// #game-board {
+//   background-color: rgb(78, 78, 78);
+// }
+#move-history {
+  background-color: grey;
 }
 .tile {
   fill: transparent;
@@ -53,6 +56,16 @@ button.btn {
 }
 .tile:hover {
   fill: azure;
+}
+.red-side {
+  stroke: firebrick;
+  stroke-width: 3px;
+  fill: transparent;
+}
+.blue-side {
+  stroke: royalblue;
+  stroke-width: 3px;
+  fill: transparent;
 }
 
 @keyframes slow-blink {

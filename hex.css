@@ -4,6 +4,7 @@ body {
   background-image: url(./images/HexTrimmed.png);
   background-size: 1000px;
   background-position-y: -5px;
+  animation: marquee 30s linear 0s infinite;
   overflow: hidden;
 }
 
@@ -51,8 +52,8 @@ button.btn {
   width: 300px;
 }
 
-#game-board, #move-history {
-  border: 1px solid black;
+#move-history {
+  background-color: grey;
 }
 
 .tile {
@@ -63,6 +64,18 @@ button.btn {
 
 .tile:hover {
   fill: azure;
+}
+
+.red-side {
+  stroke: firebrick;
+  stroke-width: 3px;
+  fill: transparent;
+}
+
+.blue-side {
+  stroke: royalblue;
+  stroke-width: 3px;
+  fill: transparent;
 }
 
 @keyframes slow-blink {

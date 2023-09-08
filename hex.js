@@ -22,6 +22,7 @@ function addEvents() {
 
 let playerNumber = 0;
 let boardSize = 7;
+let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
 
 function makeGame(size = 7, player = 1) {
   //Switch to game view
@@ -31,7 +32,9 @@ function makeGame(size = 7, player = 1) {
 
   //Define the dimension of the hexagon
   const width = $("#game-board").width();
-  const tileSide = 0.9 * width / (size * 2.6 + 0.87);
+  const RAD3 = Math.sqrt(3);
+  const boardUnitWidth = (size * RAD3 + (RAD3 / 2 * (size - 1)));
+  const tileSide = 0.8 * width / boardUnitWidth;
   const tiles = new Array(size * size);
   for (let i = 0; i < tiles.length; i++) {
     tiles[i] = i;
@@ -40,7 +43,7 @@ function makeGame(size = 7, player = 1) {
   //Create svg
   let svg = d3.select("#game-board")
     .append("svg")
-    .attr("viewBox", `-50 -100 ${width} ${width}`);
+    .attr("viewBox", `-${0.1 * width} -${0.1 * width} ${width} ${width}`);
 
   //Create the hexagon
   svg.selectAll("polygon")
@@ -52,14 +55,86 @@ function makeGame(size = 7, player = 1) {
     .attr("points", e => {
       const row = Math.floor(e / size);
       const col = (e % size);
-      let pointString = `${(col * 1.73 + row * 0.87) * tileSide},${(0.5 + row * 1.5) * tileSide}`;
-      pointString += ` ${(0.87 + col * 1.73 + row * 0.87) * tileSide},${(row * 1.5) * tileSide}`;
-      pointString += ` ${(1.73 + col * 1.73 + row * 0.87) * tileSide},${(0.5 + row * 1.5) * tileSide}`;
-      pointString += ` ${(1.73 + col * 1.73 + row * 0.87) * tileSide},${(1.5 + row * 1.5) * tileSide}`;
-      pointString += ` ${(0.87 + col * 1.73 + row * 0.87) * tileSide},${(2 + row * 1.5) * tileSide}`;
-      pointString += ` ${(col * 1.73 + row * 0.87) * tileSide},${(1.5 + row * 1.5) * tileSide}`;
+      let pointString = `${(col * RAD3 + row * RAD3 / 2) * tileSide},${(0.5 + row * 1.5) * tileSide}`;
+      pointString += ` ${(RAD3 / 2 + col * RAD3 + row * RAD3 / 2) * tileSide},${(row * 1.5) * tileSide}`;
+      pointString += ` ${(RAD3 + col * RAD3 + row * RAD3 / 2) * tileSide},${(0.5 + row * 1.5) * tileSide}`;
+      pointString += ` ${(RAD3 + col * RAD3 + row * RAD3 / 2) * tileSide},${(1.5 + row * 1.5) * tileSide}`;
+      pointString += ` ${(RAD3 / 2 + col * RAD3 + row * RAD3 / 2) * tileSide},${(2 + row * 1.5) * tileSide}`;
+      pointString += ` ${(col * RAD3 + row * RAD3 / 2) * tileSide},${(1.5 + row * 1.5) * tileSide}`;
       return pointString;
-    }).attr("onclick","assignColor(event)");
+    }).attr("onclick", "assignColor(event)");
+
+  //Color top side
+  svg.append("path").attr("d", () => {
+    let dString = `M0,${0.5 * tileSide}`;
+    for (let i = 0; i < size; i++) {
+      dString += ` L${(RAD3 / 2 + i * RAD3) * tileSide},0`;
+      dString += ` L${(RAD3 + i * RAD3) * tileSide},${0.5 * tileSide}`;
+    };
+    return dString;
+  }).attr("class", "red-side");
+
+  //Color bottom side
+  svg.append("path").attr("d", () => {
+    let dString = `M${((size - 1) * RAD3 / 2) * tileSide},${(1.5 + (size - 1) * 1.5) * tileSide}`;
+    for (let i = 0; i < size; i++) {
+      dString += ` L${(RAD3 / 2 + i * RAD3 + (size - 1) * RAD3 / 2) * tileSide},${(2 + (size - 1) * 1.5) * tileSide}`;
+      dString += ` L${(RAD3 + i * RAD3 + (size - 1) * RAD3 / 2) * tileSide},${(1.5 + (size - 1) * 1.5) * tileSide}`;
+    };
+    return dString;
+  }).attr("class", "red-side");
+
+  //Color left side
+  svg.append("path").attr("d", () => {
+    let dString = `M0,${0.5 * tileSide}`;
+    for (let i = 0; i < size; i++) {
+      dString += ` L${(i * RAD3 / 2) * tileSide},${(1.5 + i * 1.5) * tileSide}`;
+      dString += ` L${(RAD3 / 2 + i * RAD3 / 2) * tileSide},${(2 + i * 1.5) * tileSide}`;
+    };
+    return dString;
+  }).attr("class", "blue-side");
+
+  //Color right side
+  svg.append("path").attr("d", () => {
+    let dString = `M${(RAD3 + (size - 1) * RAD3) * tileSide},${0.5 * tileSide}`;
+    dString += ` L${(RAD3 + (size - 1) * RAD3) * tileSide},${1.5 * tileSide}`;
+    for (let i = 1; i < size; i++) {
+      dString += ` L${(RAD3 + (size - 1) * RAD3 + i * RAD3 / 2) * tileSide},${(0.5 + i * 1.5) * tileSide}`;
+      dString += ` L${(RAD3 + (size - 1) * RAD3 + i * RAD3 / 2) * tileSide},${(1.5 + i * 1.5) * tileSide}`;
+    };
+    return dString;
+  }).attr("class", "blue-side");
+
+  let columnList = alphabet.slice(0, size);
+  //Column denomination (top)
+  for (let i = 0; i < size; i++) {
+    svg.append("text")
+      .attr("x", (i * RAD3 + RAD3 / 8) * tileSide)
+      .attr("y", "0")
+      .html(columnList[i])
+      .style("font-size",`${11 / size}em`);
+
+    //Column denomination (bottom)
+    svg.append("text")
+      .attr("x", RAD3 * (i + 3 / 8 + size / 2) * tileSide)
+      .attr("y", tileSide * ((size - 1) * 1.5 + 2.2))
+      .html(columnList[i])
+      .style("font-size",`${11 / size}em`);
+
+    //Row denomination (left)
+    svg.append("text")
+      .attr("x", (RAD3 / 2 * i - 1) * tileSide)
+      .attr("y", (1.5 * i + 1.1) * tileSide)
+      .html(i + 1)
+      .style("font-size",`${11 / size}em`);
+
+    //Row denomination (right)
+    svg.append("text")
+      .attr("x", (RAD3 / 2 * i + 0.5 + RAD3 * size) * tileSide)
+      .attr("y", (1.5 * i + 1.1) * tileSide)
+      .html(i + 1)
+      .style("font-size",`${11 / size}em`);
+  };
 };
 
 function assignColor(event) {
