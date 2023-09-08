@@ -1,3 +1,5 @@
+const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
+
 //Define the default state of the Redux store
 let defaultMenuState = {
   playerNumber: 0,
@@ -5,7 +7,7 @@ let defaultMenuState = {
 };
 let defaultGameState = {
   turn: 1,
-  currentPlayer: "Blue"
+  currentPlayer: "blue"
 };
 
 // Definition of all the action types
@@ -16,7 +18,7 @@ const TURN = "Advances to next turn";
 //Actions
 const setPlayerNumber = (int) => ({ type: NUMBER, value: int });
 const setBoardSize = (int) => ({ type: BOARD, value: int });
-const nextTurn = () => ({type: TURN});
+const nextTurn = () => ({ type: TURN });
 
 //Reducers
 const menuReducer = (state = defaultMenuState, action) => {
@@ -41,19 +43,17 @@ const gameReducer = (state = defaultGameState, action) => {
     case TURN:
       return {
         turn: state.turn + 1,
-        currentPlayer: state.currentPlayer == "Blue" ? "Red" : "Blue"
+        currentPlayer: state.currentPlayer == "blue" ? "red" : "blue"
       };
     default:
       return state;
   }
 };
 
-const rootReducer = Redux.combineReducers({menu: menuReducer, game: gameReducer});
+const rootReducer = Redux.combineReducers({ menu: menuReducer, game: gameReducer });
 
 //Store
 const store = Redux.createStore(rootReducer);
-
-const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
 
 //Assign events to DOM components (Called upon body loaded)
 function addEvents() {
@@ -89,9 +89,11 @@ function makeGame(size = 7) {
 
   //Define the dimension of the hexagon
   const width = $("#game-board").width();
+  const height = $("#game-board").height();
+  const aspectRatio = Math.max(height / width, 0.6);
   const RAD3 = Math.sqrt(3);
   const boardUnitWidth = (size * RAD3 + (RAD3 / 2 * (size - 1)));
-  const tileSide = 0.8 * width / boardUnitWidth;
+  const tileSide = aspectRatio * width / boardUnitWidth;
   const tiles = new Array(size * size);
   for (let i = 0; i < tiles.length; i++) {
     tiles[i] = i;
@@ -167,14 +169,14 @@ function makeGame(size = 7) {
   for (let i = 0; i < size; i++) {
     svg.append("text")
       .attr("x", (i * RAD3 + RAD3 / 8) * tileSide)
-      .attr("y", "0")
+      .attr("y", -0.05 * tileSide)
       .html(columnList[i])
       .style("font-size", `${11 / size}em`);
 
     //Column denomination (bottom)
     svg.append("text")
       .attr("x", RAD3 * (i + 3 / 8 + size / 2) * tileSide)
-      .attr("y", tileSide * ((size - 1) * 1.5 + 2.2))
+      .attr("y", tileSide * ((size - 1) * 1.5 + 2.4))
       .html(columnList[i])
       .style("font-size", `${11 / size}em`);
 
@@ -199,26 +201,33 @@ function assignColor(event) {
   let source = event.target;
   let gameState = store.getState().game;
   switch (gameState.currentPlayer) {
-    case "Blue":
+    case "blue":
       source.style["fill"] = "royalblue";
       break;
-    case "Red":
+    case "red":
       source.style["fill"] = "firebrick";
       break;
   }
   source.onclick = "";
-  updateHistory(source);
-  checkWin();
+  updateHistory(source, gameState.currentPlayer);
+  nextMove();
 }
 
 //Adds moves to right section
-function updateHistory(trigger) {
-  
+function updateHistory(trigger, color) {
+  let id = trigger.id;
+  let size = store.getState().menu.boardSize;
+  const row = Math.ceil(id / size);
+  const col = alphabet[id % size];
+  d3.select("#move-history").append("div")
+    .attr("class", `history-${color} history-entry`)
+    .html(col + row);
+  document.getElementById("move-history").scrollBy(0, 1000);
 }
 
 //Checks if the game has been won, either continue or show who won
 function checkWin() {
-  
+
 }
 
 

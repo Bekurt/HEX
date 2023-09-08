@@ -1,8 +1,13 @@
+// Variables
+$redPlayer: firebrick;
+$bluePlayer: royalblue;
+
+// Styles
 body {
   background-color: lightblue;
   font-family: "Consolas";
   background-image: url(./images/HexTrimmed.png);
-  background-size: 1000px;
+  background-size: 100%;
   background-position-y: -5px;
   animation: marquee 30s linear 0s infinite;
   overflow: hidden;
@@ -12,7 +17,7 @@ body {
   margin-top: 35vh;
   width: 120%;
   margin-left: -10%;
-  height: 250px;
+  height: 30vh;
   border: 1px solid black;
   overflow-y: scroll;
 }
@@ -27,9 +32,10 @@ a:hover {
   color: black;
 }
 #title {
-  font-size: 108px;
+  font-size: 16vh;
 }
 #subtitle {
+  font-size: 4vh;
   animation: slow-blink 4s ease-in-out 0s infinite;
 }
 #title-wrapper, #player-select, #difficulty {
@@ -37,18 +43,22 @@ a:hover {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  height: 250px;
+  height: 30vh;
   padding: 10px 0;
 }
 button.btn {
-  width: 300px;
+  max-width: 300px;
+  width: 20vw;
 }
 #game-board {
   padding: 0;
 }
 #move-history {
+  position: relative;
   padding: 0;
   background-color: grey;
+  height: 100vh;
+  overflow-y: scroll;
 }
 .tile {
   fill: transparent;
@@ -59,27 +69,42 @@ button.btn {
   fill: azure;
 }
 .red-side {
-  stroke: firebrick;
+  stroke: $redPlayer;
   stroke-width: 3px;
   fill: transparent;
 }
 .blue-side {
-  stroke: royalblue;
+  stroke: $bluePlayer;
   stroke-width: 3px;
   fill: transparent;
 }
 header {
   padding: 10px;
-  font-size: 24px;
-  height: 60px;
+  font-size: calc(1vw + 1vh);
 }
 header#hint {
   background-color: rgb(138, 201, 223);
 }
 header#history-title {
   background-color: rgb(127, 140, 151);
+  position: sticky;
+  top: 0;
+}
+.history-entry {
+  padding-left: 10px;
+  width: 50%;
+  font-size: 2vw;
+}
+.history-blue {
+  float: left;
+  background-color: $bluePlayer;
+}
+.history-red {
+  float: right;
+  background-color: $redPlayer;
 }
 
+// Animations
 @keyframes slow-blink {
   0% {opacity: 100%;}
   50% {opacity: 30%;}
@@ -88,4 +113,16 @@ header#history-title {
 @keyframes marquee {
   0% {background-position-x: 0;}
   100% {background-position-x: 1000px;}  
+}
+
+// Media queries
+@media (max-height: 530px) {
+  #player-select {
+    flex-direction: row;
+  }
+  #difficulty {
+    width: 100vw;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }

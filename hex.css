@@ -2,7 +2,7 @@ body {
   background-color: lightblue;
   font-family: "Consolas";
   background-image: url(./images/HexTrimmed.png);
-  background-size: 1000px;
+  background-size: 100%;
   background-position-y: -5px;
   animation: marquee 30s linear 0s infinite;
   overflow: hidden;
@@ -13,7 +13,7 @@ body {
   margin-top: 35vh;
   width: 120%;
   margin-left: -10%;
-  height: 250px;
+  height: 30vh;
   border: 1px solid black;
   overflow-y: scroll;
 }
@@ -32,10 +32,11 @@ a:hover {
 }
 
 #title {
-  font-size: 108px;
+  font-size: 16vh;
 }
 
 #subtitle {
+  font-size: 4vh;
   animation: slow-blink 4s ease-in-out 0s infinite;
 }
 
@@ -44,12 +45,13 @@ a:hover {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  height: 250px;
+  height: 30vh;
   padding: 10px 0;
 }
 
 button.btn {
-  width: 300px;
+  max-width: 300px;
+  width: 20vw;
 }
 
 #game-board {
@@ -57,8 +59,11 @@ button.btn {
 }
 
 #move-history {
+  position: relative;
   padding: 0;
   background-color: grey;
+  height: 100vh;
+  overflow-y: scroll;
 }
 
 .tile {
@@ -85,8 +90,7 @@ button.btn {
 
 header {
   padding: 10px;
-  font-size: 24px;
-  height: 60px;
+  font-size: calc(1vw + 1vh);
 }
 
 header#hint {
@@ -95,6 +99,24 @@ header#hint {
 
 header#history-title {
   background-color: rgb(127, 140, 151);
+  position: sticky;
+  top: 0;
+}
+
+.history-entry {
+  padding-left: 10px;
+  width: 50%;
+  font-size: 2vw;
+}
+
+.history-blue {
+  float: left;
+  background-color: royalblue;
+}
+
+.history-red {
+  float: right;
+  background-color: firebrick;
 }
 
 @keyframes slow-blink {
@@ -114,5 +136,15 @@ header#history-title {
   }
   100% {
     background-position-x: 1000px;
+  }
+}
+@media (max-height: 530px) {
+  #player-select {
+    flex-direction: row;
+  }
+  #difficulty {
+    width: 100vw;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 }/*# sourceMappingURL=hex.css.map */
