@@ -4,7 +4,7 @@ let defaultMenuState = {
   boardSize: 7,
 };
 let defaultGameState = {
-  turn: 0,
+  turn: 1,
   currentPlayer: "Blue"
 };
 
@@ -100,7 +100,7 @@ function makeGame(size = 7) {
   //Create svg
   let svg = d3.select("#game-board")
     .append("svg")
-    .attr("viewBox", `-${0.1 * width} -${0.1 * width} ${width} ${width}`);
+    .attr("viewBox", `-${0.1 * width} -${0.05 * width} ${width} ${width}`);
 
   //Create the hexagon
   svg.selectAll("polygon")
@@ -207,8 +207,20 @@ function assignColor(event) {
       break;
   }
   source.onclick = "";
-  nextMove();
+  updateHistory(source);
+  checkWin();
 }
+
+//Adds moves to right section
+function updateHistory(trigger) {
+  
+}
+
+//Checks if the game has been won, either continue or show who won
+function checkWin() {
+  
+}
+
 
 function nextMove() {
   store.dispatch(nextTurn());

@@ -43,10 +43,11 @@ a:hover {
 button.btn {
   width: 300px;
 }
-// #game-board {
-//   background-color: rgb(78, 78, 78);
-// }
+#game-board {
+  padding: 0;
+}
 #move-history {
+  padding: 0;
   background-color: grey;
 }
 .tile {
@@ -66,6 +67,17 @@ button.btn {
   stroke: royalblue;
   stroke-width: 3px;
   fill: transparent;
+}
+header {
+  padding: 10px;
+  font-size: 24px;
+  height: 60px;
+}
+header#hint {
+  background-color: rgb(138, 201, 223);
+}
+header#history-title {
+  background-color: rgb(127, 140, 151);
 }
 
 @keyframes slow-blink {
