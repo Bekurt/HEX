@@ -21,31 +21,26 @@
 
 <body onload="addEvents()">
   <div id="main-menu" class="container-fluid">
-    <a href="#player-select">
-      <section id="title-wrapper">
-        <h1 id="title" class="text-center">HEX</h1>
-        <h6 id="subtitle" class="text-center"><em>Click to start</em></h6>
-      </section>
-    </a>
-    <a href="#difficulty">
-      <section id="player-select" class="container">
-        <button type="button" id="select-1" class="btn btn-info">1 Player</button>
-        <button type="button" id="select-2" class="btn btn-info">2 Players</button>
-      </section>
-    </a>
-    <section id="difficulty" class="container">
+    <section id="title-wrapper">
+      <h1 id="title" class="text-center">HEX</h1>
+      <h6 id="subtitle" class="text-center"><em>Click to start</em></h6>
+    </section>
+    <section id="player-select" class="container hidden">
+      <button type="button" id="select-1" class="btn btn-info">1 Player</button>
+      <button type="button" id="select-2" class="btn btn-info">2 Players</button>
+    </section>
+    <section id="difficulty" class="container hidden">
       <button type="button" id="select-easy" class="btn btn-info">Easy (5x5)</button>
       <button type="button" id="select-normal" class="btn btn-info">Normal (7x7)</button>
       <button type="button" id="select-hard" class="btn btn-info">Hard (11x11)</button>
-      <a href="#player-select">
-        <button type="button" id="select-hard" class="btn btn-warning">Back</button>
-      </a>
+      <button type="button" id="select-back" class="btn btn-warning">Back</button>
     </section>
   </div>
   <main id="game" class="container-fluid hidden">
     <div class="row">
       <section id="game-board" class="col-10">
-        <header id="hint" class="container-fluid">Try to connect the opposite sides of the board that match your color! First player is Blue</header>
+        <header id="hint" class="container-fluid">Try to connect the opposite sides of the board that match your color!
+          First player is Blue</header>
       </section>
       <section id="move-history" class="col-2">
         <header id="history-title" class="container-fluid">Move history</header>

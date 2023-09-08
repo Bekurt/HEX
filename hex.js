@@ -57,10 +57,18 @@ const store = Redux.createStore(rootReducer);
 
 //Assign events to DOM components (Called upon body loaded)
 function addEvents() {
+  $("#title-wrapper").click(() => {
+    $("#title-wrapper").toggleClass("hidden");
+    $("#player-select").toggleClass("hidden");
+  });
   $("#select-1").click(() => {
+    $("#player-select").toggleClass("hidden");
+    $("#difficulty").toggleClass("hidden");
     store.dispatch(setPlayerNumber(1));
   });
   $("#select-2").click(() => {
+    $("#player-select").toggleClass("hidden");
+    $("#difficulty").toggleClass("hidden");
     store.dispatch(setPlayerNumber(2));
   });
   $("#select-easy").click(() => {
@@ -77,6 +85,10 @@ function addEvents() {
     store.dispatch(setBoardSize(11));
     let size = store.getState().menu.boardSize;
     makeGame(size);
+  });
+  $("#select-back").click(() => {
+    $("#difficulty").toggleClass("hidden");
+    $("#player-select").toggleClass("hidden");
   });
 }
 
