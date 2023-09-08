@@ -210,6 +210,7 @@ function assignColor(event) {
   }
   source.onclick = "";
   updateHistory(source, gameState.currentPlayer);
+  checkWin();
   nextMove();
 }
 
@@ -219,6 +220,11 @@ function updateHistory(trigger, color) {
   let size = store.getState().menu.boardSize;
   const row = Math.ceil(id / size);
   const col = alphabet[id % size];
+  if (color === "blue"){
+    d3.select("#move-history").append("div")
+    .attr("class", `history-entry`)
+    .html(Math.ceil(store.getState().game.turn / 2));
+  }
   d3.select("#move-history").append("div")
     .attr("class", `history-${color} history-entry`)
     .html(col + row);

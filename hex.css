@@ -105,17 +105,21 @@ header#history-title {
 
 .history-entry {
   padding-left: 10px;
-  width: 50%;
+  width: 20%;
   font-size: 2vw;
+  border-right: 1px solid black;
+  float: left;
 }
 
 .history-blue {
-  float: left;
+  width: 40%;
+  border: none;
   background-color: royalblue;
 }
 
 .history-red {
-  float: right;
+  width: 40%;
+  border: none;
   background-color: firebrick;
 }
 
