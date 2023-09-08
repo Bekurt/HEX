@@ -199,8 +199,8 @@ function makeGame(size = 7) {
 // Callback for clicking a cell: colors it based on current player and advances the game
 function assignColor(event) {
   let source = event.target;
-  let gameState = store.getState().game;
-  switch (gameState.currentPlayer) {
+  let color = store.getState().game.currentPlayer;
+  switch (color) {
     case "blue":
       source.style["fill"] = "royalblue";
       break;
@@ -208,10 +208,10 @@ function assignColor(event) {
       source.style["fill"] = "firebrick";
       break;
   }
+  source.owner = color;
   source.onclick = "";
-  updateHistory(source, gameState.currentPlayer);
-  checkWin();
-  nextMove();
+  updateHistory(source, color);
+  checkWin(color);
 }
 
 //Adds moves to right section
@@ -220,11 +220,13 @@ function updateHistory(trigger, color) {
   let size = store.getState().menu.boardSize;
   const row = Math.ceil(id / size);
   const col = alphabet[id % size];
+  // Turn counter
   if (color === "blue"){
     d3.select("#move-history").append("div")
     .attr("class", `history-entry`)
     .html(Math.ceil(store.getState().game.turn / 2));
   }
+  // Actual move
   d3.select("#move-history").append("div")
     .attr("class", `history-${color} history-entry`)
     .html(col + row);
@@ -232,8 +234,61 @@ function updateHistory(trigger, color) {
 }
 
 //Checks if the game has been won, either continue or show who won
-function checkWin() {
+function checkWin(player) {
+  let size = store.getState().menu.boardSize;
+  let tiles = document.getElementsByClassName("tile");
+  let boardState = new Array(size * size);
 
+  // Setup of the board info necessary to find a winner
+  for (let idx = 0; idx < boardState.length; idx++) {
+    boardState[idx] = {
+        id: idx,
+        owner: tiles[idx].owner,
+        row: Math.floor(idx / size),
+        col: idx % size
+      };
+  }
+  let check = player === "blue" ? "col" : "row";
+  let playerTiles = boardState.filter(elem => elem.owner === player);
+  let startingTiles = playerTiles.filter(elem => elem[check] === 0);
+  let endingTiles = playerTiles.filter(elem => elem[check] === size - 1);
+
+  // If it's impossible for the player to have won at this point, skip the check
+  if (!(startingTiles.length && endingTiles.length)) {
+    nextMove();
+    return;
+  };
+
+  // Check for a path from the relevant sides
+  playerTiles = playerTiles.filter(elem => elem[check] !== 0);
+  let tilesToCheck = startingTiles.slice();
+  while (tilesToCheck.length > 0) {
+    // Find neighbouring claimed tiles from the list of tiles to be checked
+    let newNeighbours = playerTiles.filter( elem => {
+      let rowDiff = elem.row - tilesToCheck[0].row;
+      let colDiff = elem.col - tilesToCheck[0].col;
+      return (
+        Math.abs(rowDiff) < 2 &&
+        Math.abs(colDiff) < 2 &&
+        Math.abs(rowDiff + colDiff) < 2
+        );
+    });
+
+    // Check for a win
+    let win = newNeighbours.some(nElem => endingTiles.some(eElem => eElem.id === nElem.id));
+    if (win) {
+      return console.log(`${player} player won!`)
+    }
+
+    // Remove neighbours from the list so they aren't considered in future iterations
+    playerTiles = playerTiles.filter(elem => newNeighbours.some(e => e.id !== elem.id));
+    
+    // Add neighbours to checlist
+    tilesToCheck.push(...newNeighbours);
+    tilesToCheck.shift();
+  }
+  // If you get here nobody won yet;
+  nextMove();
 }
 
 
