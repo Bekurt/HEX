@@ -14,11 +14,13 @@ let defaultGameState = {
 const NUMBER = "Set the number of players";
 const BOARD = "Set the size of the board";
 const TURN = "Advances to next turn";
+const RESTART = "Reset game state";
 
 //Actions
 const setPlayerNumber = (int) => ({ type: NUMBER, value: int });
 const setBoardSize = (int) => ({ type: BOARD, value: int });
 const nextTurn = () => ({ type: TURN });
+const resetState = () => ({ type: RESTART });
 
 //Reducers
 const menuReducer = (state = defaultMenuState, action) => {
@@ -44,6 +46,11 @@ const gameReducer = (state = defaultGameState, action) => {
       return {
         turn: state.turn + 1,
         currentPlayer: state.currentPlayer == "blue" ? "red" : "blue"
+      };
+    case RESTART:
+      return {
+        turn: defaultGameState.turn,
+        currentPlayer: defaultGameState.currentPlayer
       };
     default:
       return state;
@@ -97,10 +104,12 @@ function addEvents() {
     $("#game").toggleClass("hidden");
     $("#game-board").html("");
     $("#move-container").html("");
+    store.dispatch(resetState());
     let size = store.getState().menu.boardSize;
     makeGame(size);
   });
   $("#back-to-menu").click(() => {
+    store.dispatch(resetState());
     $("#staticBackdrop").css("display", "none");
     $("#staticBackdrop").toggleClass("show");
     $("#main-menu").toggleClass("hidden");
@@ -288,7 +297,7 @@ function checkWin(player) {
 
   // If it's impossible for the player to have won at this point, skip the check
   if (!(startingTiles.length && endingTiles.length)) {
-    nextMove();
+    nextMove(boardState);
     return;
   };
 
@@ -322,15 +331,27 @@ function checkWin(player) {
     tilesToCheck.shift();
   }
   // If you get here nobody won yet;
-  nextMove();
+  nextMove(boardState);
 }
 
+// Displays the modal window with the winning player
 function endGame(player) {
   $("#staticBackdrop").css("display", "block");
   $("#staticBackdrop").toggleClass("show");
   $(".modal-title").html(`${player} player wins!`);
 }
 
-function nextMove() {
+// Updates game state and computes next AI move if relevant
+function nextMove(currentState) {
   store.dispatch(nextTurn());
+  // let currentTurn = store.getState().game.turn; // might delete
+  // const color = store.getState().game.currentPlayer;
+  // const AI = store.getState().menu.playerNumber === 1 ? true : false;
+  // if (AI && color === "red") {
+  //   let freeTiles = currentState.filter(e => e.owner === undefined);
+    
+
+  //   let fakeEvent = { target: document.getElementById(`${currentTurn}`) };
+  //   assignColor(fakeEvent);
+  // }
 }
