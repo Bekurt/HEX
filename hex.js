@@ -246,11 +246,11 @@ function resolveTurn(event) {
   const size = state.menu.boardSize;
   const turn = state.game.turn;
   const player = state.game.currentPlayer;
-  const boardState = getBoardState(size);
   
   assignColor(source, player);
   updateHistory(source, player, size, turn);
   
+  const boardState = getBoardState(size);
   let gameWon = checkWin(boardState, size, player);
   if (gameWon) {
     endGame(player);
@@ -311,6 +311,7 @@ function updateHistory(source, color, size, turn) {
 //Checks if the game has been won by current player: returns true if game is won
 function checkWin(boardState, size, player) {
   let check = player === "blue" ? "col" : "row";
+  let playerTiles = boardState.filter(elem => elem.owner === player);
   let startingTiles = playerTiles.filter(elem => elem[check] === 0);
   let endingTiles = playerTiles.filter(elem => elem[check] === size - 1);
 
@@ -320,9 +321,7 @@ function checkWin(boardState, size, player) {
   };
 
   // Check for a path from the relevant sides
-  let playerTiles = boardState.filter(elem => elem.owner === player);
   playerTiles = playerTiles.filter(elem => elem[check] !== 0);
-  
   let tilesToCheck = startingTiles.slice();
   while (tilesToCheck.length > 0) {
     // Find neighbouring claimed tiles from the list of tiles to be checked
@@ -361,7 +360,7 @@ function endGame(player) {
 };
 
 // Updates game state and computes next AI move if relevant
-function nextMove(currentState) {
+function nextMove() {
   store.dispatch(nextTurn());
   // let currentTurn = store.getState().game.turn; // might delete
   // const color = store.getState().game.currentPlayer;
