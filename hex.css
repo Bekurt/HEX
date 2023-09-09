@@ -45,16 +45,21 @@ button.btn {
   width: 20vw;
 }
 
-#game-board {
+#game-side, #game-board {
   padding: 0;
 }
 
 #move-history {
-  position: relative;
   padding: 0;
   background-color: grey;
   height: 100vh;
+}
+
+#move-container {
+  position: relative;
   overflow-y: scroll;
+  height: 100%;
+  width: 100%;
 }
 
 .tile {
@@ -112,6 +117,31 @@ header#history-title {
   width: 40%;
   border: none;
   background-color: firebrick;
+}
+
+#staticBackdrop {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-dialog {
+  max-width: 2000px !important;
+  width: 50vw;
+}
+
+.modal-header, .modal-body {
+  background-color: lightblue;
+  border: none;
+}
+
+.modal-title {
+  text-align: center;
+  width: 100%;
+}
+
+.modal-footer {
+  border: none;
+  background-color: lightblue;
+  justify-content: space-around;
 }
 
 @keyframes slow-blink {

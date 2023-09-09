@@ -90,6 +90,27 @@ function addEvents() {
     $("#difficulty").toggleClass("hidden");
     $("#player-select").toggleClass("hidden");
   });
+  $("#restart-game").click(() => {
+    $("#staticBackdrop").css("display", "none");
+    $("#staticBackdrop").toggleClass("show");
+    $("#main-menu").toggleClass("hidden");
+    $("#game").toggleClass("hidden");
+    $("#game-board").html("");
+    $("#move-container").html("");
+    let size = store.getState().menu.boardSize;
+    makeGame(size);
+  });
+  $("#back-to-menu").click(() => {
+    $("#staticBackdrop").css("display", "none");
+    $("#staticBackdrop").toggleClass("show");
+    $("#main-menu").toggleClass("hidden");
+    $("#game").toggleClass("hidden");
+    $("#game-board").html("");
+    $("#move-container").html("");
+    $("#title-wrapper").toggleClass("hidden");
+    $("#difficulty").toggleClass("hidden");
+    $("body").css("background-image", "url(./images/HexTrimmed.png)");
+  });
 }
 
 //Funcion to setup the board and ready for the game
@@ -100,8 +121,8 @@ function makeGame(size = 7) {
   $("#game").toggleClass("hidden");
 
   //Define the dimension of the hexagon
-  const width = $("#game-board").width();
-  const height = $("#game-board").height();
+  const width = $("#game-side").width();
+  const height = $("#game-side").height();
   const aspectRatio = Math.max(height / width, 0.6);
   const RAD3 = Math.sqrt(3);
   const boardUnitWidth = (size * RAD3 + (RAD3 / 2 * (size - 1)));
@@ -233,16 +254,16 @@ function updateHistory(trigger, color) {
   const row = Math.ceil(id / size);
   const col = alphabet[id % size];
   // Turn counter
-  if (color === "blue"){
-    d3.select("#move-history").append("div")
-    .attr("class", `history-entry`)
-    .html(Math.ceil(store.getState().game.turn / 2));
+  if (color === "blue") {
+    d3.select("#move-container").append("div")
+      .attr("class", `history-entry`)
+      .html(Math.ceil(store.getState().game.turn / 2));
   }
   // Actual move
-  d3.select("#move-history").append("div")
+  d3.select("#move-container").append("div")
     .attr("class", `history-${color} history-entry`)
     .html(col + row);
-  document.getElementById("move-history").scrollBy(0, 1000);
+  document.getElementById("move-container").scrollBy(0, 1000);
 }
 
 //Checks if the game has been won, either continue or show who won
@@ -254,11 +275,11 @@ function checkWin(player) {
   // Setup of the board info necessary to find a winner
   for (let idx = 0; idx < boardState.length; idx++) {
     boardState[idx] = {
-        id: idx,
-        owner: tiles[idx].owner,
-        row: Math.floor(idx / size),
-        col: idx % size
-      };
+      id: idx,
+      owner: tiles[idx].owner,
+      row: Math.floor(idx / size),
+      col: idx % size
+    };
   }
   let check = player === "blue" ? "col" : "row";
   let playerTiles = boardState.filter(elem => elem.owner === player);
@@ -276,25 +297,26 @@ function checkWin(player) {
   let tilesToCheck = startingTiles.slice();
   while (tilesToCheck.length > 0) {
     // Find neighbouring claimed tiles from the list of tiles to be checked
-    let newNeighbours = playerTiles.filter( elem => {
+    let newNeighbours = playerTiles.filter(elem => {
       let rowDiff = elem.row - tilesToCheck[0].row;
       let colDiff = elem.col - tilesToCheck[0].col;
       return (
         Math.abs(rowDiff) < 2 &&
         Math.abs(colDiff) < 2 &&
         Math.abs(rowDiff + colDiff) < 2
-        );
+      );
     });
 
     // Check for a win
     let win = newNeighbours.some(nElem => endingTiles.some(eElem => eElem.id === nElem.id));
     if (win) {
-      return console.log(`${player} player won!`)
+      endGame(player);
+      return;
     }
 
     // Remove neighbours from the list so they aren't considered in future iterations
-    playerTiles = playerTiles.filter(elem => newNeighbours.some(e => e.id !== elem.id));
-    
+    playerTiles = playerTiles.filter(elem => !newNeighbours.some(e => e.id === elem.id));
+
     // Add neighbours to checlist
     tilesToCheck.push(...newNeighbours);
     tilesToCheck.shift();
@@ -303,6 +325,11 @@ function checkWin(player) {
   nextMove();
 }
 
+function endGame(player) {
+  $("#staticBackdrop").css("display", "block");
+  $("#staticBackdrop").toggleClass("show");
+  $(".modal-title").html(`${player} player wins!`);
+}
 
 function nextMove() {
   store.dispatch(nextTurn());
