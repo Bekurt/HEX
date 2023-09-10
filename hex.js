@@ -246,16 +246,19 @@ function resolveTurn(event) {
   const size = state.menu.boardSize;
   const turn = state.game.turn;
   const player = state.game.currentPlayer;
-  
+
   assignColor(source, player);
   updateHistory(source, player, size, turn);
-  
+
   const boardState = getBoardState(size);
   let gameWon = checkWin(boardState, size, player);
   if (gameWon) {
     endGame(player);
   } else {
-    nextMove();
+    store.dispatch(nextTurn());
+    if (AI && player === "blue") {
+      aiMove(boardState, size, turn);
+    };
   };
 };
 
@@ -360,16 +363,55 @@ function endGame(player) {
 };
 
 // Updates game state and computes next AI move if relevant
-function nextMove() {
-  store.dispatch(nextTurn());
-  // let currentTurn = store.getState().game.turn; // might delete
-  // const color = store.getState().game.currentPlayer;
-  // const AI = store.getState().menu.playerNumber === 1 ? true : false;
-  // if (AI && color === "red") {
-  //   let freeTiles = currentState.filter(e => e.owner === undefined);
+function aiMove(boardState, size, turn) {
+  // Monte-Carlo evaluation of the next best move
+  let winCounter = boardState.map(e => ({id: e.id, winPercent: 0}));
+  for (let index = 0; index < 2500; index++) {
+    let boardSimulated = boardState.map( e => ({id: e.id, owner: e.owner, row: e.row, col: e.col}));
+    boardSimulated = shuffle(boardSimulated);
 
+    // Assign the remaining moves
+    let redLeft = Math.ceil((size ** 2 - turn) / 2);
+    for (let index = 0; index < boardSimulated.length; index++) {
+      if (boardSimulated[index].owner === undefined) {
+        if (redLeft > 0) {
+          boardSimulated[index].owner = "red";
+          redLeft--;
+        } else {
+          boardSimulated[index].owner = "blue";
+        }
+      }
+    }
+    let roundWon = checkWin(boardSimulated, size, "red")
+    if (roundWon) {
+      boardSimulated.forEach(e => {
+        let realTile = boardState.find(t => t.id == e.id);
+        if (e.owner === "red" && realTile.owner === undefined) {
+          let index = winCounter.findIndex(w => w.id == e.id);
+          winCounter[index].winPercent++;
+        }
+      });
+    }
+  }
 
-  //   let fakeEvent = { target: document.getElementById(`${currentTurn}`) };
-  //   assignColor(fakeEvent);
-  // }
+  // Play best move
+  let choice = winCounter.reduce(function(best, elem) { 
+    if (elem.winPercent > best.winPercent) {
+      return best = elem;
+    } else {
+      return best;
+    }
+  }, { winPercent: 0 });
+  resolveTurn({target: document.getElementById(choice.id)});
 };
+
+// Fisher-Yates random shuffle algorithm
+function shuffle(array) {
+  for (let index = array.length - 1; index > 0; index--) {
+    const randIdx = Math.floor(Math.random() * index);
+    const memory = array[index];
+    array[index] = array[randIdx];
+    array[randIdx] = memory;
+  }
+  return array;
+}
