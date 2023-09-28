@@ -13,19 +13,23 @@ export function GameInterface({ switchInterface, playerChoice }: GameProps) {
       <section id="game-side" className="h-full w-9/12 flex flex-col">
         <header
           id="hint"
-          className="bg-sky-700 text-black p-2 lg:p-2.5 xl:p-3 2xl:p-3.5 text-sm lg:text-base xl:text-lg 2xl:text-xl h-[10%] max-h-16 flex-shrink-0"
+          className="bg-secondary text-black p-2 lg:p-2.5 xl:p-3 2xl:p-3.5 text-sm lg:text-base xl:text-lg 2xl:text-xl h-[10%] max-h-16 flex-shrink-0"
         >
           Try to connect the opposite sides of the board that match your color!
           First player is Blue
         </header>
-        <div id="boundary" ref={dimRef} className="w-full h-[90%] flex-grow">
+        <div
+          id="boundary"
+          ref={dimRef}
+          className="w-full h-[90%] flex-grow bg-tertiary-normal"
+        >
           <GameBoard size={playerChoice.boardSize} dimRef={dimRef} />
         </div>
       </section>
-      <section id="move-history" className="h-full w-3/12 bg-slate-500">
+      <section id="move-history" className="h-full w-3/12 bg-side-body">
         <header
           id="history-title"
-          className="bg-slate-600 text-black p-2 lg:p-2.5 xl:p-3 2xl:p-3.5 text-sm lg:text-base xl:text-lg 2xl:text-xl h-[10%] max-h-16"
+          className="bg-side-title text-black p-2 lg:p-2.5 xl:p-3 2xl:p-3.5 text-sm lg:text-base xl:text-lg 2xl:text-xl h-[10%] max-h-16"
         >
           Move history
         </header>
@@ -104,7 +108,8 @@ function createBoard(boardState: Tile[], box: Box): JSX.Element {
     Math.round((0.8 * box.width) / boardUnitWidth)
   );
 
-  let JSX = boardState.map((e) => {
+  //EmptyBoard
+  let boardJSX = boardState.map((e) => {
     let pointString = `${(e.col * RAD3 + (e.row * RAD3) / 2) * sideLength},${
       (0.5 + e.row * 1.5) * sideLength
     }`;
@@ -133,7 +138,89 @@ function createBoard(boardState: Tile[], box: Box): JSX.Element {
     );
   });
 
-  return <>{JSX}</>;
+  //Color sides
+  let topString = "";
+  for (let n = 0; n < rowNum; n++) {
+    topString += ` L${(RAD3 / 2 + n * RAD3) * sideLength},0`;
+    topString += ` L${(RAD3 + n * RAD3) * sideLength},${0.5 * sideLength}`;
+  }
+
+  const topJSX = (
+    <path
+      className="stroke-red-800 stroke-[3px] fill-none"
+      d={`M0,${0.5 * sideLength}` + topString}
+    ></path>
+  );
+
+  let bottomString = "";
+  for (let n = 0; n < rowNum; n++) {
+    bottomString += ` L${
+      (RAD3 / 2 + n * RAD3 + ((rowNum - 1) * RAD3) / 2) * sideLength
+    },${(2 + (rowNum - 1) * 1.5) * sideLength}`;
+    bottomString += ` L${
+      (RAD3 + n * RAD3 + ((rowNum - 1) * RAD3) / 2) * sideLength
+    },${(1.5 + (rowNum - 1) * 1.5) * sideLength}`;
+  }
+
+  const bottomJSX = (
+    <path
+      className="stroke-red-800 stroke-[3px] fill-none"
+      d={
+        `M${(RAD3 / 2 + ((rowNum - 1) * RAD3) / 2) * sideLength},${
+          (2 + (rowNum - 1) * 1.5) * sideLength
+        }` + bottomString
+      }
+    ></path>
+  );
+
+  let leftString = "";
+  for (let n = 0; n < rowNum; n++) {
+    leftString += ` L${((n * RAD3) / 2) * sideLength},${
+      (1.5 + n * 1.5) * sideLength
+    }`;
+    leftString += ` L${(RAD3 / 2 + (n * RAD3) / 2) * sideLength},${
+      (2 + n * 1.5) * sideLength
+    }`;
+  }
+
+  const leftJSX = (
+    <path
+      className="stroke-blue-800 stroke-[3px] fill-none"
+      d={`M0,${0.5 * sideLength}` + leftString}
+    ></path>
+  );
+
+  let rightString = "";
+  for (let n = 0; n < rowNum; n++) {
+    rightString += ` L${
+      (RAD3 + (rowNum - 1) * RAD3 + (n * RAD3) / 2) * sideLength
+    },${(0.5 + n * 1.5) * sideLength}`;
+    rightString += ` L${
+      (RAD3 + (rowNum - 1) * RAD3 + (n * RAD3) / 2) * sideLength
+    },${(1.5 + n * 1.5) * sideLength}`;
+  }
+
+  const rightJSX = (
+    <path
+      className="stroke-blue-800 stroke-[3px] fill-none"
+      d={
+        `M${(RAD3 + (rowNum - 1) * RAD3) * sideLength},${0.5 * sideLength}` +
+        rightString
+      }
+    ></path>
+  );
+
+  //Add Columns/Rows denominations
+
+  return (
+    <>
+      {boardJSX}
+      {topJSX}
+      {bottomJSX}
+      {leftJSX}
+      {rightJSX}
+    </>
+  );
 }
 
 // Returns the right class based on the player who owns the tile
@@ -142,7 +229,7 @@ function translateOwner(owner: string): string {
     case "blue":
       return "fill-blue-600";
     case "red":
-      return "fill-red-800";
+      return "fill-red-600";
     default:
       return "fill-none";
   }

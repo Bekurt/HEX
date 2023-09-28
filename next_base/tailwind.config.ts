@@ -1,5 +1,6 @@
 import { url } from "inspector";
 import type { Config } from "tailwindcss";
+import colors from "tailwindcss/colors";
 
 const config: Config = {
   content: [
@@ -30,6 +31,19 @@ const config: Config = {
             "background-position-y": "-840px",
           },
         },
+      },
+      colors: {
+        main: colors.indigo[800],
+        secondary: colors.indigo[600],
+        tertiary: {
+          normal: colors.indigo[400],
+          hover: colors.indigo[900],
+        },
+        warning: {
+          normal: colors.pink[300],
+          hover: colors.pink[900],
+        },
+        side: { body: colors.neutral[500], title: colors.neutral[600] },
       },
     },
   },

@@ -12,7 +12,7 @@ export default function HomePage() {
   });
 
   return (
-    <main className="w-full h-screen bg-sky-600">
+    <main className="w-full h-screen bg-main">
       {appState === "menu" && (
         <MainMenu
           switchInterface={setAppState}
