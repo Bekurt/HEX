@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
-export function GameInterface() {
+interface GameProps {
+  switchInterface: React.Dispatch<React.SetStateAction<"menu" | "game">>;
+  playerChoice: { boardSize: number; playerNum: number };
+}
+
+export function GameInterface({ switchInterface, playerChoice }: GameProps) {
   const dimRef = useRef(null);
 
   return (
@@ -14,7 +19,7 @@ export function GameInterface() {
           First player is Blue
         </header>
         <div id="boundary" ref={dimRef} className="w-full h-[90%] flex-grow">
-          <GameBoard size={14} dimRef={dimRef} />
+          <GameBoard size={playerChoice.boardSize} dimRef={dimRef} />
         </div>
       </section>
       <section id="move-history" className="h-full w-3/12 bg-slate-500">
@@ -29,7 +34,7 @@ export function GameInterface() {
   );
 }
 
-interface Tiles {
+interface Tile {
   id: number;
   row: number;
   col: number;
@@ -43,7 +48,7 @@ interface Box {
 
 function GameBoard({ size = 6, dimRef }: { size: number; dimRef: any }) {
   //Setup of empty board
-  const emptyBoard: Tiles[] = [];
+  const emptyBoard: Tile[] = [];
   for (let i = 0; i < size * size; i++) {
     emptyBoard.push({
       id: i,
@@ -89,7 +94,7 @@ function GameBoard({ size = 6, dimRef }: { size: number; dimRef: any }) {
 }
 
 // Returns
-function createBoard(boardState: Tiles[], box: Box): JSX.Element {
+function createBoard(boardState: Tile[], box: Box): JSX.Element {
   const rowNum = Math.sqrt(boardState.length);
   const RAD3 = Math.sqrt(3);
   const boardUnitWidth = rowNum * RAD3 + (RAD3 / 2) * (rowNum - 1);
