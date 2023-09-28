@@ -1,7 +1,7 @@
 "use client";
 
-import { MainMenu } from "./main_menu";
-import { GameInterface } from "./game";
+import { MainMenu } from "./MainMenu";
+import { GameInterface } from "./GameInterface";
 import { useState } from "react";
 
 export default function HomePage() {

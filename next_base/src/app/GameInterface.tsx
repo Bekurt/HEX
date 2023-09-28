@@ -1,4 +1,3 @@
-import { count } from "console";
 import { useEffect, useRef, useState } from "react";
 
 interface GameProps {
@@ -67,16 +66,11 @@ function GameBoard({ size = 6, dimRef }: { size: number; dimRef: any }) {
   const [boardState, setBoardState] = useState(emptyBoard);
   const [boxSize, setboxSize] = useState({ width: 0, height: 0 });
 
-  // Create the board
-  const board = createBoard(boardState, boxSize);
-
   useEffect(() => {
     let observer = new ResizeObserver((entries) => {
       const { inlineSize: width, blockSize: height } =
         entries[0].contentBoxSize[0];
       setboxSize({ width, height });
-
-      //observer.disconnect();
     });
 
     observer.observe(dimRef.current);
@@ -93,7 +87,7 @@ function GameBoard({ size = 6, dimRef }: { size: number; dimRef: any }) {
       } ${boxSize.height}`}
       className="h-full w-full"
     >
-      {board}
+      {createBoard(boardState, boxSize)}
     </svg>
   );
 }
@@ -133,7 +127,7 @@ function createBoard(boardState: Tile[], box: Box): JSX.Element {
       <polygon
         id={String(e.id)}
         key={e.id}
-        className={`stroke-black stroke-1 ${translateOwner(e.owner)}`}
+        className={`stroke-black stroke-2 ${translateOwner(e.owner)}`}
         points={pointString}
       ></polygon>
     );
