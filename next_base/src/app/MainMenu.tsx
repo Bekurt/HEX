@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { state, action } from "./page";
+import type { action } from "./page";
 import { TitleScreen } from "./TitleScreen";
 import { PlayerSelect } from "./PlayerSelect";
 import { DifficultySelect } from "./DifficultySelect";

@@ -1,12 +1,7 @@
 import { useRef } from "react";
-import type { state, action } from "./page";
 import { BoardDisplay } from "./BoardDisplay";
 
-interface Props {
-  state: state;
-  dispatch: React.Dispatch<action>;
-}
-export function GameInterface({ state, dispatch }: Props) {
+export function GameInterface() {
   const dimRef = useRef(null);
 
   return (
@@ -24,7 +19,7 @@ export function GameInterface({ state, dispatch }: Props) {
           ref={dimRef}
           className="w-full h-[90%] flex-grow bg-tertiary-normal"
         >
-          <BoardDisplay size={state.boardSize} dimRef={dimRef} />
+          <BoardDisplay dimRef={dimRef} />
         </div>
       </section>
       <section id="move-history" className="h-full w-3/12 bg-side-body">

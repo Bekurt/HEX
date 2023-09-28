@@ -2,7 +2,13 @@
 
 import { MainMenu } from "./MainMenu";
 import { GameInterface } from "./GameInterface";
-import { useReducer } from "react";
+import { createContext, useReducer } from "react";
+
+export const stateContext = createContext({
+  appState: "menu",
+  boardSize: 6,
+  playerNum: 1,
+});
 
 export default function HomePage() {
   const [state, dispatch] = useReducer(reducer, {
@@ -14,9 +20,9 @@ export default function HomePage() {
   return (
     <main className="w-full h-screen bg-main">
       {state.appState === "menu" && <MainMenu dispatch={dispatch} />}
-      {state.appState === "game" && (
-        <GameInterface state={state} dispatch={dispatch} />
-      )}
+      <stateContext.Provider value={state}>
+        {state.appState === "game" && <GameInterface />}
+      </stateContext.Provider>
     </main>
   );
 }

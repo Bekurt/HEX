@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { colorSides } from "./colorSides";
 import { generateLabels } from "./generateLabels";
+import { postRenderOperations, resolveTurn } from "./gameManagement";
+import { stateContext } from "./page";
 
-interface Tile {
+export interface Tile {
+  [key: string]: number | string;
   id: number;
   row: number;
   col: number;
@@ -10,7 +13,6 @@ interface Tile {
 }
 
 interface Props {
-  size: number;
   box: {
     width: number;
     height: number;
@@ -18,7 +20,9 @@ interface Props {
 }
 
 // Returns
-export function GameBoard({ size, box }: Props): JSX.Element {
+export function GameBoard({ box }: Props): JSX.Element {
+  const menuState = useContext(stateContext);
+  const size = menuState.boardSize;
   const emptyBoard: Tile[] = [];
   for (let i = 0; i < size * size; i++) {
     emptyBoard.push({
@@ -29,6 +33,11 @@ export function GameBoard({ size, box }: Props): JSX.Element {
     });
   }
   const [boardState, setBoardState] = useState(emptyBoard);
+
+  // Fires the check for a winner after state change is rendered
+  useEffect(() => {
+    postRenderOperations(boardState, setBoardState, menuState.playerNum);
+  }, [boardState, menuState.playerNum]);
 
   const rowNum = Math.sqrt(boardState.length);
   const RAD3 = Math.sqrt(3);
@@ -59,6 +68,7 @@ export function GameBoard({ size, box }: Props): JSX.Element {
     pointString += ` ${(e.col * RAD3 + (e.row * RAD3) / 2) * sideLength},${
       (1.5 + e.row * 1.5) * sideLength
     }`;
+
     return (
       <polygon
         id={String(e.id)}
@@ -67,11 +77,14 @@ export function GameBoard({ size, box }: Props): JSX.Element {
           e.owner
         )} cursor-pointer`}
         points={pointString}
-        onClick={(event) => {
-          console.log("fired!");
-          const state = colorTile(event.currentTarget.id, boardState);
-          setBoardState(state);
-        }}
+        onClick={(event) =>
+          resolveTurn({
+            id: event.currentTarget.id,
+            state: boardState,
+            setState: setBoardState,
+            playerNum: menuState.playerNum,
+          })
+        }
       ></polygon>
     );
   });
@@ -91,27 +104,12 @@ export function GameBoard({ size, box }: Props): JSX.Element {
   );
 }
 
-// Updates the state when a tile is selected
-function colorTile(id: string, boardState: Tile[]) {
-  const thisTile = boardState.filter((e) => e.id === Number(id));
-  if (thisTile[0].owner === "") {
-    const turn = boardState.filter((e) => e.owner !== "").length + 1;
-    const player = turn % 2 === 0 ? "red" : "blue";
-    const newState = boardState.map((e) => {
-      return e.id === thisTile[0].id ? { ...e, owner: player } : e;
-    });
-    return newState;
-  } else {
-    return boardState;
-  }
-}
-
 // Returns the right class based on the player who owns the tile
 function translateOwner(owner: string): string {
   switch (owner) {
     case "blue":
       return "fill-player1-tile";
-    case "red":
+    case "green":
       return "fill-player2-tile";
     default:
       return "fill-transparent";

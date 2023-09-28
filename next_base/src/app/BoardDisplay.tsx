@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { GameBoard } from "./GameBoard";
 
-export function BoardDisplay({ size, dimRef }: { size: number; dimRef: any }) {
+export function BoardDisplay({ dimRef }: { dimRef: any }) {
   const [boxSize, setboxSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function BoardDisplay({ size, dimRef }: { size: number; dimRef: any }) {
       } ${boxSize.height}`}
       className="h-full w-full"
     >
-      <GameBoard size={size} box={boxSize} />
+      <GameBoard box={boxSize} />
     </svg>
   );
 }
