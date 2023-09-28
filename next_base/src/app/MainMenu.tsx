@@ -1,13 +1,14 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import type { state, action } from "./page";
 import { TitleScreen } from "./TitleScreen";
 import { PlayerSelect } from "./PlayerSelect";
 import { DifficultySelect } from "./DifficultySelect";
 
-export function MainMenu({
-  switchInterface,
-  setChoice,
-  playerChoice,
-}: MenuProps) {
+interface Props {
+  dispatch: React.Dispatch<action>;
+}
+
+export function MainMenu({ dispatch }: Props) {
   let [navState, setNavState] = useState(
     "title" as "title" | "player" | "difficulty"
   );
@@ -23,29 +24,12 @@ export function MainMenu({
       >
         {navState === "title" && <TitleScreen setNavState={setNavState} />}
         {navState === "player" && (
-          <PlayerSelect
-            setChoice={setChoice}
-            setNavState={setNavState}
-            playerChoice={playerChoice}
-          />
+          <PlayerSelect dispatch={dispatch} setNavState={setNavState} />
         )}
         {navState === "difficulty" && (
-          <DifficultySelect
-            switchInterface={switchInterface}
-            setChoice={setChoice}
-            setNavState={setNavState}
-            playerChoice={playerChoice}
-          />
+          <DifficultySelect dispatch={dispatch} setNavState={setNavState} />
         )}
       </div>
     </div>
   );
-}
-
-export type drillProp<T> = React.Dispatch<React.SetStateAction<T>>;
-
-interface MenuProps {
-  switchInterface: drillProp<"menu" | "game">;
-  setChoice: drillProp<{ boardSize: number; playerNum: number }>;
-  playerChoice: { boardSize: number; playerNum: number };
 }

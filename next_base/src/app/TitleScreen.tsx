@@ -1,7 +1,7 @@
-import { drillProp } from "./MainMenu";
-
 type TitleProp = {
-  setNavState: drillProp<"title" | "player" | "difficulty">;
+  setNavState: React.Dispatch<
+    React.SetStateAction<"title" | "player" | "difficulty">
+  >;
 };
 
 export function TitleScreen({ setNavState }: TitleProp) {

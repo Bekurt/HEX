@@ -1,18 +1,12 @@
-import { drillProp } from "./MainMenu";
+import type { action } from "./page";
 
-interface DifficultyProps {
-  switchInterface: drillProp<"menu" | "game">;
-  setChoice: drillProp<{ boardSize: number; playerNum: number }>;
-  setNavState: drillProp<"title" | "player" | "difficulty">;
-  playerChoice: { boardSize: number; playerNum: number };
+interface Props {
+  dispatch: React.Dispatch<action>;
+  setNavState: React.Dispatch<
+    React.SetStateAction<"title" | "player" | "difficulty">
+  >;
 }
-
-export function DifficultySelect({
-  switchInterface,
-  setChoice,
-  setNavState,
-  playerChoice,
-}: DifficultyProps) {
+export function DifficultySelect({ dispatch, setNavState }: Props) {
   return (
     <section
       id="wrapper"
@@ -22,9 +16,9 @@ export function DifficultySelect({
         id="easy"
         className="w-48 sm:w-64 md:w-80 lg:w-96 m-1 md:m-3 p-1.5 rounded-lg bg-tertiary-normal hover:bg-tertiary-hover hover:text-white text-black font-mono text-lg sm:text-xl md:text-2xl"
         onClick={() => {
-          setChoice({ ...playerChoice, boardSize: 6 });
+          dispatch({ type: "set-size", value: 6 });
           setNavState("title");
-          switchInterface("game");
+          dispatch({ type: "switch-mode" });
         }}
       >
         Easy (6x6)
@@ -33,9 +27,9 @@ export function DifficultySelect({
         id="normal"
         className="w-48 sm:w-64 md:w-80 lg:w-96 m-1 md:m-3 p-1.5 rounded-lg bg-tertiary-normal hover:bg-tertiary-hover hover:text-white text-black font-mono text-lg sm:text-xl md:text-2xl"
         onClick={() => {
-          setChoice({ ...playerChoice, boardSize: 9 });
+          dispatch({ type: "set-size", value: 9 });
           setNavState("title");
-          switchInterface("game");
+          dispatch({ type: "switch-mode" });
         }}
       >
         Normal (9x9)
@@ -44,9 +38,9 @@ export function DifficultySelect({
         id="hard"
         className="w-48 sm:w-64 md:w-80 lg:w-96 m-1 md:m-3 p-1.5 rounded-lg bg-tertiary-normal hover:bg-tertiary-hover hover:text-white text-black font-mono text-lg sm:text-xl md:text-2xl"
         onClick={() => {
-          setChoice({ ...playerChoice, boardSize: 14 });
+          dispatch({ type: "set-size", value: 14 });
           setNavState("title");
-          switchInterface("game");
+          dispatch({ type: "switch-mode" });
         }}
       >
         Hard (14x14)

@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import type { state, action } from "./page";
 
-interface GameProps {
-  switchInterface: React.Dispatch<React.SetStateAction<"menu" | "game">>;
-  playerChoice: { boardSize: number; playerNum: number };
+interface Props {
+  state: state;
+  dispatch: React.Dispatch<action>;
 }
-
-export function GameInterface({ switchInterface, playerChoice }: GameProps) {
+export function GameInterface({ state, dispatch }: Props) {
   const dimRef = useRef(null);
 
   return (
@@ -23,7 +23,7 @@ export function GameInterface({ switchInterface, playerChoice }: GameProps) {
           ref={dimRef}
           className="w-full h-[90%] flex-grow bg-tertiary-normal"
         >
-          <GameBoard size={playerChoice.boardSize} dimRef={dimRef} />
+          <GameBoard size={state.boardSize} dimRef={dimRef} />
         </div>
       </section>
       <section id="move-history" className="h-full w-3/12 bg-side-body">
