@@ -63,9 +63,12 @@ export function GameBoard({ size, box }: Props): JSX.Element {
       <polygon
         id={String(e.id)}
         key={e.id}
-        className={`stroke-black stroke-2 ${translateOwner(e.owner)}`}
+        className={`stroke-black stroke-2 ${translateOwner(
+          e.owner
+        )} cursor-pointer`}
         points={pointString}
         onClick={(event) => {
+          console.log("fired!");
           const state = colorTile(event.currentTarget.id, boardState);
           setBoardState(state);
         }}
@@ -90,12 +93,17 @@ export function GameBoard({ size, box }: Props): JSX.Element {
 
 // Updates the state when a tile is selected
 function colorTile(id: string, boardState: Tile[]) {
-  const turn = boardState.filter((e) => e.owner !== "").length + 1;
-  const player = turn % 2 === 0 ? "red" : "blue";
-  const newState = boardState.map((e) => {
-    return e.id === Number(id) ? { ...e, owner: player } : e;
-  });
-  return newState;
+  const thisTile = boardState.filter((e) => e.id === Number(id));
+  if (thisTile[0].owner === "") {
+    const turn = boardState.filter((e) => e.owner !== "").length + 1;
+    const player = turn % 2 === 0 ? "red" : "blue";
+    const newState = boardState.map((e) => {
+      return e.id === thisTile[0].id ? { ...e, owner: player } : e;
+    });
+    return newState;
+  } else {
+    return boardState;
+  }
 }
 
 // Returns the right class based on the player who owns the tile
@@ -106,6 +114,6 @@ function translateOwner(owner: string): string {
     case "red":
       return "fill-player2-tile";
     default:
-      return "fill-none";
+      return "fill-transparent";
   }
 }

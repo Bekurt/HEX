@@ -14,7 +14,11 @@ export function generateLabels(
         key={`topLable${e}`}
         x={(e * RAD3 + (-1 * RAD3) / 2 + RAD3 / 2) * sideLength}
         y={(1 - 1 * 1.5) * sideLength + sideLength / 4}
-        style={{ textAnchor: "middle", fontSize: `${sideLength / 2}px` }}
+        style={{
+          textAnchor: "middle",
+          fontSize: `${sideLength / 2}px`,
+          userSelect: "none",
+        }}
       >
         {String.fromCharCode(65 + e)}
       </text>
@@ -27,7 +31,11 @@ export function generateLabels(
         key={`bottomLable${e}`}
         x={(e * RAD3 + (rowNum * RAD3) / 2 + RAD3 / 2) * sideLength}
         y={(1 + rowNum * 1.5) * sideLength + sideLength / 4}
-        style={{ textAnchor: "middle", fontSize: `${sideLength / 2}px` }}
+        style={{
+          textAnchor: "middle",
+          fontSize: `${sideLength / 2}px`,
+          userSelect: "none",
+        }}
       >
         {String.fromCharCode(65 + e)}
       </text>
@@ -40,7 +48,11 @@ export function generateLabels(
         key={`leftLable${e}`}
         x={(-1 * RAD3 + (e * RAD3) / 2 + RAD3 / 2) * sideLength}
         y={(1 + e * 1.5) * sideLength + sideLength / 4}
-        style={{ textAnchor: "middle", fontSize: `${sideLength / 2}px` }}
+        style={{
+          textAnchor: "middle",
+          fontSize: `${sideLength / 2}px`,
+          userSelect: "none",
+        }}
       >
         {1 + e}
       </text>
@@ -53,7 +65,11 @@ export function generateLabels(
         key={`rightLable${e}`}
         x={(rowNum * RAD3 + (e * RAD3) / 2 + RAD3 / 2) * sideLength}
         y={(1 + e * 1.5) * sideLength + sideLength / 4}
-        style={{ textAnchor: "middle", fontSize: `${sideLength / 2}px` }}
+        style={{
+          textAnchor: "middle",
+          fontSize: `${sideLength / 2}px`,
+          userSelect: "none",
+        }}
       >
         {1 + e}
       </text>
