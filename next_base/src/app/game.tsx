@@ -1,3 +1,4 @@
+import { count } from "console";
 import { useEffect, useRef, useState } from "react";
 
 interface GameProps {
@@ -140,14 +141,18 @@ function createBoard(boardState: Tile[], box: Box): JSX.Element {
 
   //Color sides
   let topString = "";
-  for (let n = 0; n < rowNum; n++) {
+  for (let n = 0; n < rowNum - 1; n++) {
     topString += ` L${(RAD3 / 2 + n * RAD3) * sideLength},0`;
     topString += ` L${(RAD3 + n * RAD3) * sideLength},${0.5 * sideLength}`;
   }
+  topString += ` L${(RAD3 / 2 + (rowNum - 1) * RAD3) * sideLength},0`;
+  topString += ` L${(RAD3 * 0.75 + (rowNum - 1) * RAD3) * sideLength},${
+    0.25 * sideLength
+  }`;
 
   const topJSX = (
     <path
-      className="stroke-red-800 stroke-[3px] fill-none"
+      className="stroke-player2-side stroke-[3px] fill-none"
       d={`M0,${0.5 * sideLength}` + topString}
     ></path>
   );
@@ -164,17 +169,17 @@ function createBoard(boardState: Tile[], box: Box): JSX.Element {
 
   const bottomJSX = (
     <path
-      className="stroke-red-800 stroke-[3px] fill-none"
+      className="stroke-player2-side stroke-[3px] fill-none"
       d={
-        `M${(RAD3 / 2 + ((rowNum - 1) * RAD3) / 2) * sideLength},${
-          (2 + (rowNum - 1) * 1.5) * sideLength
+        `M${(RAD3 / 4 + ((rowNum - 1) * RAD3) / 2) * sideLength},${
+          (1.75 + (rowNum - 1) * 1.5) * sideLength
         }` + bottomString
       }
     ></path>
   );
 
   let leftString = "";
-  for (let n = 0; n < rowNum; n++) {
+  for (let n = 0; n < rowNum - 1; n++) {
     leftString += ` L${((n * RAD3) / 2) * sideLength},${
       (1.5 + n * 1.5) * sideLength
     }`;
@@ -182,10 +187,15 @@ function createBoard(boardState: Tile[], box: Box): JSX.Element {
       (2 + n * 1.5) * sideLength
     }`;
   }
-
+  leftString += ` L${(((rowNum - 1) * RAD3) / 2) * sideLength},${
+    (1.5 + (rowNum - 1) * 1.5) * sideLength
+  }`;
+  leftString += ` L${(RAD3 / 4 + ((rowNum - 1) * RAD3) / 2) * sideLength},${
+    (1.75 + (rowNum - 1) * 1.5) * sideLength
+  }`;
   const leftJSX = (
     <path
-      className="stroke-blue-800 stroke-[3px] fill-none"
+      className="stroke-player1-side stroke-[3px] fill-none"
       d={`M0,${0.5 * sideLength}` + leftString}
     ></path>
   );
@@ -202,15 +212,72 @@ function createBoard(boardState: Tile[], box: Box): JSX.Element {
 
   const rightJSX = (
     <path
-      className="stroke-blue-800 stroke-[3px] fill-none"
+      className="stroke-player1-side stroke-[3px] fill-none"
       d={
-        `M${(RAD3 + (rowNum - 1) * RAD3) * sideLength},${0.5 * sideLength}` +
-        rightString
+        `M${(RAD3 * 0.75 + (rowNum - 1) * RAD3) * sideLength},${
+          0.25 * sideLength
+        }` + rightString
       }
     ></path>
   );
 
-  //Add Columns/Rows denominations
+  //Column denomination (top)
+  const counter = [];
+  for (let i = 0; i < rowNum; i++) {
+    counter.push(i);
+  }
+
+  const topLabels = counter.map((e) => {
+    return (
+      <text
+        key={`topLable${e}`}
+        x={(e * RAD3 + (-1 * RAD3) / 2 + RAD3 / 2) * sideLength}
+        y={(1 - 1 * 1.5) * sideLength + sideLength / 4}
+        style={{ textAnchor: "middle", fontSize: `${sideLength / 2}px` }}
+      >
+        {String.fromCharCode(65 + e)}
+      </text>
+    );
+  });
+
+  const bottomLabels = counter.map((e) => {
+    return (
+      <text
+        key={`bottomLable${e}`}
+        x={(e * RAD3 + (rowNum * RAD3) / 2 + RAD3 / 2) * sideLength}
+        y={(1 + rowNum * 1.5) * sideLength + sideLength / 4}
+        style={{ textAnchor: "middle", fontSize: `${sideLength / 2}px` }}
+      >
+        {String.fromCharCode(65 + e)}
+      </text>
+    );
+  });
+
+  const leftLabels = counter.map((e) => {
+    return (
+      <text
+        key={`leftLable${e}`}
+        x={(-1 * RAD3 + (e * RAD3) / 2 + RAD3 / 2) * sideLength}
+        y={(1 + e * 1.5) * sideLength + sideLength / 4}
+        style={{ textAnchor: "middle", fontSize: `${sideLength / 2}px` }}
+      >
+        {1 + e}
+      </text>
+    );
+  });
+
+  const rightLabels = counter.map((e) => {
+    return (
+      <text
+        key={`rightLable${e}`}
+        x={(rowNum * RAD3 + (e * RAD3) / 2 + RAD3 / 2) * sideLength}
+        y={(1 + e * 1.5) * sideLength + sideLength / 4}
+        style={{ textAnchor: "middle", fontSize: `${sideLength / 2}px` }}
+      >
+        {1 + e}
+      </text>
+    );
+  });
 
   return (
     <>
@@ -219,6 +286,10 @@ function createBoard(boardState: Tile[], box: Box): JSX.Element {
       {bottomJSX}
       {leftJSX}
       {rightJSX}
+      {topLabels}
+      {bottomLabels}
+      {leftLabels}
+      {rightLabels}
     </>
   );
 }
@@ -227,9 +298,9 @@ function createBoard(boardState: Tile[], box: Box): JSX.Element {
 function translateOwner(owner: string): string {
   switch (owner) {
     case "blue":
-      return "fill-blue-600";
+      return "fill-player1-tile";
     case "red":
-      return "fill-red-600";
+      return "fill-player2-tile";
     default:
       return "fill-none";
   }

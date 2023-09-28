@@ -44,6 +44,14 @@ const config: Config = {
           hover: colors.pink[900],
         },
         side: { body: colors.neutral[500], title: colors.neutral[600] },
+        player2: {
+          tile: colors.red[500],
+          side: colors.red[600],
+        },
+        player1: {
+          tile: colors.blue[500],
+          side: colors.blue[600],
+        },
       },
     },
   },
