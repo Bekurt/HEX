@@ -7,7 +7,7 @@ interface resolveParams {
   state: Tile[];
   setState: Dispatch<SetStateAction<Tile[]>>;
   playerNum: number;
-  setGameWon: Dispatch<SetStateAction<boolean>>;
+  gameDispatch: Dispatch<{ type: "win" | "push"; value?: string }>;
 }
 
 export function resolveTurn({
@@ -15,7 +15,7 @@ export function resolveTurn({
   state,
   setState,
   playerNum,
-  setGameWon,
+  gameDispatch,
 }: resolveParams) {
   const thisTile = state.filter((e) => e.id === Number(id))[0];
   if (thisTile.owner !== "") {
@@ -23,13 +23,15 @@ export function resolveTurn({
   }
   const turn = state.filter((e) => e.owner !== "").length + 1;
   const player = turn % 2 === 0 ? "yellow" : "green";
+  const move = `${String.fromCharCode(65 + thisTile.col)}${thisTile.row}`;
   const newState = state.map((e) => {
     return e.id === thisTile.id ? { ...e, owner: player } : e;
   });
   setState(newState);
+  gameDispatch({ type: "push", value: move });
   const gameWon = checkWin({ state: newState, player });
   if (gameWon) {
-    setGameWon(true);
+    gameDispatch({ type: "win" });
   } else {
     if (playerNum == 1 && player === "green") {
       const aiChoice = aiMove(newState, turn);
@@ -38,7 +40,7 @@ export function resolveTurn({
         state: newState,
         setState: setState,
         playerNum: playerNum,
-        setGameWon: setGameWon,
+        gameDispatch: gameDispatch,
       });
     }
   }
@@ -109,7 +111,7 @@ function checkWin({ state, player }: winParams) {
 function aiMove(state: Tile[], turn: number) {
   // Monte-Carlo evaluation of the next best move
   let winCounter = state.map((e) => ({ id: e.id, winPercent: 0 }));
-  for (let index = 0; index < 2500; index++) {
+  for (let index = 0; index < 2000; index++) {
     let boardSimulated = state.map((e) => ({
       id: e.id,
       owner: e.owner,

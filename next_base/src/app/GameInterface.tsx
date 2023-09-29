@@ -1,14 +1,17 @@
-import { useRef, useState } from "react";
+import { useReducer, useRef } from "react";
 import { BoardDisplay } from "./BoardDisplay";
 import { Button } from "./Button";
 
 export function GameInterface() {
   const dimRef = useRef(null);
-  const [gameWon, setGameWon] = useState(false);
+  const [state, dispatch] = useReducer(gameReducer, {
+    gameWon: false,
+    moveArray: [""],
+  });
 
   return (
     <>
-      {gameWon && <WinNotification />}
+      {state.gameWon && <WinNotification />}
       <main id="game" className="w-full h-full flex">
         <section id="game-side" className="h-full w-9/12 flex flex-col">
           <GameHeader />
@@ -17,14 +20,56 @@ export function GameInterface() {
             ref={dimRef}
             className="w-full h-[90%] flex-grow bg-tertiary-normal"
           >
-            <BoardDisplay dimRef={dimRef} setGameWon={setGameWon} />
+            <BoardDisplay dimRef={dimRef} gameDispatch={dispatch} />
           </div>
         </section>
-        <section id="move-history" className="h-full w-3/12 bg-side-body">
+        <section id="move-history" className="h-full w-3/12 flex flex-col">
           <HistoryHeader />
+          <History moveArray={state.moveArray} />
         </section>
       </main>
     </>
+  );
+}
+
+function History({ moveArray }: { moveArray: string[] }) {
+  const historyJSX = moveArray.slice(1).map((e, i) => {
+    let turn = Math.ceil(i / 2) + 1;
+    if (i % 2 === 1) {
+      return (
+        <div
+          key={`yellow-move${turn}`}
+          className="w-2/5 float-left bg-player2-tile text-black text-lg pl-3 py-1"
+        >
+          {e}
+        </div>
+      );
+    } else {
+      return (
+        <>
+          <div
+            key={`move${turn}`}
+            className="w-1/5 float-left bg-side-title text-lg pl-3 py-1"
+          >
+            <strong>{turn}</strong>
+          </div>
+          <div
+            key={`green-move${turn}`}
+            className="w-2/5 float-left bg-player1-tile text-black text-lg pl-3 py-1"
+          >
+            {e}
+          </div>
+        </>
+      );
+    }
+  });
+  return (
+    <div
+      id="history-wrapper"
+      className="w-full h-[90%] flex-grow pt-3 bg-side-body"
+    >
+      {historyJSX}
+    </div>
   );
 }
 
@@ -82,9 +127,31 @@ function HistoryHeader() {
   return (
     <header
       id="history-title"
-      className="bg-side-title text-black p-2 lg:p-2.5 xl:p-3 2xl:p-3.5 text-sm lg:text-base xl:text-lg 2xl:text-xl h-[10%] max-h-16"
+      className="bg-side-title text-black p-2 lg:p-2.5 xl:p-3 2xl:p-3.5 text-sm lg:text-base xl:text-lg 2xl:text-xl h-[10%] max-h-16 flex-shrink-0"
     >
       Move history
     </header>
   );
+}
+
+interface state {
+  gameWon: boolean;
+  moveArray: string[];
+}
+
+interface action {
+  type: string;
+  value?: string;
+}
+
+function gameReducer(state: state, action: action): state {
+  switch (action.type) {
+    case "win":
+      return { ...state, gameWon: !state.gameWon };
+    case "push":
+      let move = action.value as string;
+      return { ...state, moveArray: [...state.moveArray, move] };
+    default:
+      return state;
+  }
 }

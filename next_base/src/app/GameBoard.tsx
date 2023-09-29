@@ -23,11 +23,11 @@ interface Props {
     width: number;
     height: number;
   };
-  setGameWon: Dispatch<SetStateAction<boolean>>;
+  gameDispatch: Dispatch<{ type: "win" | "push"; value?: string }>;
 }
 
 // Returns
-export function GameBoard({ box, setGameWon }: Props): JSX.Element {
+export function GameBoard({ box, gameDispatch }: Props): JSX.Element {
   const menuState = useContext(stateContext);
   const size = menuState.boardSize;
   const emptyBoard: Tile[] = [];
@@ -85,7 +85,7 @@ export function GameBoard({ box, setGameWon }: Props): JSX.Element {
             state: boardState,
             setState: setBoardState,
             playerNum: menuState.playerNum,
-            setGameWon: setGameWon,
+            gameDispatch: gameDispatch,
           })
         }
       ></polygon>
