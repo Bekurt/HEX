@@ -1,14 +1,10 @@
-import { dispatchContext } from "../page";
-import { Button } from "../Utilities/Button";
 import { useContext } from "react";
+import { navStateProp } from "./MainMenu";
+import { Button } from "../Utilities/Components/Button";
+import { appContext, createBoard, size } from "../Utilities/StateManager";
 
-interface Props {
-  setNavState: React.Dispatch<
-    React.SetStateAction<"title" | "player" | "difficulty">
-  >;
-}
-export function DifficultySelect({ setNavState }: Props) {
-  const dispatch = useContext(dispatchContext);
+export function DifficultySelect({ setNavState }: navStateProp) {
+  const { state, dispatch } = useContext(appContext);
 
   return (
     <section
@@ -20,9 +16,9 @@ export function DifficultySelect({ setNavState }: Props) {
         text="Easy (6x6)"
         colorScheme="tertiary"
         onClick={() => {
-          dispatch({ type: "set-size", value: 6 });
+          dispatch({ type: "color", value: createBoard(size.easy) });
           setNavState("title");
-          dispatch({ type: "switch-mode" });
+          dispatch({ type: "switch-mode", value: !state.isGame });
         }}
       />
       <Button
@@ -30,9 +26,9 @@ export function DifficultySelect({ setNavState }: Props) {
         text="Normal (9x9)"
         colorScheme="tertiary"
         onClick={() => {
-          dispatch({ type: "set-size", value: 9 });
+          dispatch({ type: "color", value: createBoard(size.normal) });
           setNavState("title");
-          dispatch({ type: "switch-mode" });
+          dispatch({ type: "switch-mode", value: !state.isGame });
         }}
       />
       <Button
@@ -40,9 +36,9 @@ export function DifficultySelect({ setNavState }: Props) {
         text="Hard (14x14)"
         colorScheme="tertiary"
         onClick={() => {
-          dispatch({ type: "set-size", value: 14 });
+          dispatch({ type: "color", value: createBoard(size.hard) });
           setNavState("title");
-          dispatch({ type: "switch-mode" });
+          dispatch({ type: "switch-mode", value: !state.isGame });
         }}
       />
       <Button

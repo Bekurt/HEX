@@ -1,46 +1,43 @@
-import { Tile } from "../GameComponents/GameBoard";
-import { SetStateAction, Dispatch } from "react";
+import { Dispatch } from "react";
 import { shuffle } from "./shuffle";
+import { Tile, action, owner, state } from "./StateManager";
 
 interface resolveParams {
   id: string;
-  state: Tile[];
-  setState: Dispatch<SetStateAction<Tile[]>>;
-  playerNum: number;
-  gameDispatch: Dispatch<{ type: "win" | "push"; value?: string }>;
+  state: state;
+  dispatch: Dispatch<action>;
 }
 
-export function resolveTurn({
-  id,
-  state,
-  setState,
-  playerNum,
-  gameDispatch,
-}: resolveParams) {
-  const thisTile = state.filter((e) => e.id === Number(id))[0];
-  if (thisTile.owner !== "") {
+export function resolveTurn({ id, state, dispatch }: resolveParams) {
+  // Check if move is valid
+  const board = state.boardState;
+  const thisTile = board.filter((e) => e.id === id)[0];
+  if (thisTile.owner !== owner.none) {
     return;
   }
-  const turn = state.filter((e) => e.owner !== "").length + 1;
-  const player = turn % 2 === 0 ? "yellow" : "green";
+
+  // Evaluate new state
+  const turn = board.filter((e) => e.owner !== owner.none).length + 1;
+  const player = turn % 2 === 0 ? owner.player2 : owner.player1;
   const move = `${String.fromCharCode(65 + thisTile.col)}${thisTile.row}`;
-  const newState = state.map((e) => {
+  const newBoard = board.map((e) => {
     return e.id === thisTile.id ? { ...e, owner: player } : e;
   });
-  setState(newState);
-  gameDispatch({ type: "push", value: move });
-  const gameWon = checkWin({ state: newState, player });
+  const newHistory = [...state.moveArray, move];
+  dispatch({ type: "color", value: newBoard });
+  dispatch({ type: "push", value: newHistory });
+
+  // Check if current player has won and either end game or trigger AI (if relevant)
+  const gameWon = checkWin({ state: newBoard, player });
   if (gameWon) {
-    gameDispatch({ type: "win" });
+    dispatch({ type: "win", value: true });
   } else {
-    if (playerNum == 1 && player === "green") {
-      const aiChoice = aiMove(newState, turn);
+    if (state.vsAI && player === owner.player1) {
+      const aiChoice = aiMove(newBoard, turn);
       resolveTurn({
-        id: String(aiChoice),
-        state: newState,
-        setState: setState,
-        playerNum: playerNum,
-        gameDispatch: gameDispatch,
+        id: aiChoice,
+        state: { ...state, boardState: newBoard, moveArray: newHistory },
+        dispatch: dispatch,
       });
     }
   }
@@ -48,13 +45,13 @@ export function resolveTurn({
 
 interface winParams {
   state: Tile[];
-  player: "yellow" | "green";
+  player: owner;
 }
 
 //Checks if the game has been won by current player: returns true if game is won
 function checkWin({ state, player }: winParams) {
   const size = Math.sqrt(state.length);
-  const check = player === "green" ? "col" : "row";
+  const check = player === owner.player1 ? "col" : "row";
   let playerTiles = state.filter((elem) => elem.owner === player);
   let startingTiles = playerTiles.filter((elem) => elem[check] === 0);
   let endingTiles = playerTiles.filter((elem) => elem[check] === size - 1);
@@ -100,19 +97,12 @@ function checkWin({ state, player }: winParams) {
   return false;
 }
 
-// // Displays the modal window with the winning player
-// function endGame(player) {
-//   $("#staticBackdrop").css("display", "block");
-//   $("#staticBackdrop").toggleClass("show");
-//   $(".modal-title").html(`${player} player wins!`);
-// }
-
 // Updates game state and computes next AI move if relevant
-function aiMove(state: Tile[], turn: number) {
+function aiMove(board: Tile[], turn: number) {
   // Monte-Carlo evaluation of the next best move
-  let winCounter = state.map((e) => ({ id: e.id, winPercent: 0 }));
+  let winCounter = board.map((e) => ({ id: e.id, winPercent: 0 }));
   for (let index = 0; index < 2000; index++) {
-    let boardSimulated = state.map((e) => ({
+    let boardSimulated = board.map((e) => ({
       id: e.id,
       owner: e.owner,
       row: e.row,
@@ -121,22 +111,22 @@ function aiMove(state: Tile[], turn: number) {
     boardSimulated = shuffle<Tile>(boardSimulated);
 
     // Assign the remaining moves
-    let redLeft = Math.ceil((state.length - turn) / 2);
+    let tilesLeftAI = Math.ceil((board.length - turn) / 2);
     for (let index = 0; index < boardSimulated.length; index++) {
-      if (boardSimulated[index].owner === "") {
-        if (redLeft > 0) {
-          boardSimulated[index].owner = "yellow";
-          redLeft--;
+      if (boardSimulated[index].owner === owner.none) {
+        if (tilesLeftAI > 0) {
+          boardSimulated[index].owner = owner.player2;
+          tilesLeftAI--;
         } else {
-          boardSimulated[index].owner = "green";
+          boardSimulated[index].owner = owner.player1;
         }
       }
     }
-    let roundWon = checkWin({ state: boardSimulated, player: "yellow" });
+    let roundWon = checkWin({ state: boardSimulated, player: owner.player2 });
     if (roundWon) {
       boardSimulated.forEach((e) => {
-        let realTile = state.find((t) => t.id == e.id) as Tile;
-        if (e.owner === "yellow" && realTile.owner === "") {
+        let realTile = board.find((t) => t.id == e.id) as Tile;
+        if (e.owner === owner.player2 && realTile.owner === owner.none) {
           let index = winCounter.findIndex((w) => w.id == e.id);
           winCounter[index].winPercent++;
         }
@@ -153,7 +143,7 @@ function aiMove(state: Tile[], turn: number) {
         return best;
       }
     },
-    { id: -1, winPercent: 0 }
+    { id: "", winPercent: 0 }
   );
   return choice.id;
 }

@@ -1,10 +1,6 @@
-type TitleProp = {
-  setNavState: React.Dispatch<
-    React.SetStateAction<"title" | "player" | "difficulty">
-  >;
-};
+import { navStateProp } from "./MainMenu";
 
-export function TitleScreen({ setNavState }: TitleProp) {
+export function TitleScreen({ setNavState }: navStateProp) {
   return (
     <section
       id="wrapper"

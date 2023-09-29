@@ -1,12 +1,7 @@
-import { Dispatch, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GameBoard } from "./GameBoard";
 
-interface Props {
-  dimRef: any;
-  gameDispatch: Dispatch<{ type: "win" | "push"; value?: string }>;
-}
-
-export function BoardDisplay({ dimRef, gameDispatch }: Props) {
+export function BoardDisplay({ dimRef }: any) {
   const [boxSize, setboxSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
@@ -30,7 +25,7 @@ export function BoardDisplay({ dimRef, gameDispatch }: Props) {
       } ${boxSize.height}`}
       className="h-full w-full"
     >
-      <GameBoard box={boxSize} gameDispatch={gameDispatch} />
+      <GameBoard box={boxSize} />
     </svg>
   );
 }

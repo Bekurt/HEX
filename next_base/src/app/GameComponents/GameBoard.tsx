@@ -1,47 +1,21 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useContext } from "react";
 import { colorSides } from "../Utilities/colorSides";
 import { generateLabels } from "../Utilities/generateLabels";
+import { appContext, owner } from "../Utilities/StateManager";
 import { resolveTurn } from "../Utilities/gameManagement";
-import { stateContext } from "../page";
 
-export interface Tile {
-  [key: string]: number | string;
-  id: number;
-  row: number;
-  col: number;
-  owner: string;
-}
-
-interface Props {
+interface Box {
   box: {
     width: number;
     height: number;
   };
-  gameDispatch: Dispatch<{ type: "win" | "push"; value?: string }>;
 }
 
 // Returns
-export function GameBoard({ box, gameDispatch }: Props): JSX.Element {
-  const menuState = useContext(stateContext);
-  const size = menuState.boardSize;
-  const emptyBoard: Tile[] = [];
-  for (let i = 0; i < size * size; i++) {
-    emptyBoard.push({
-      id: i,
-      row: Math.floor(i / size),
-      col: i % size,
-      owner: "",
-    });
-  }
-  const [boardState, setBoardState] = useState(emptyBoard);
+export function GameBoard({ box }: Box) {
+  const { state, dispatch } = useContext(appContext);
 
-  const rowNum = Math.sqrt(boardState.length);
+  const rowNum = Math.sqrt(state.boardState.length);
   const RAD3 = Math.sqrt(3);
   const boardUnitWidth = rowNum * RAD3 + (RAD3 / 2) * (rowNum - 1);
   const boardUnitHeight = rowNum * 1.5 + 2;
@@ -51,7 +25,7 @@ export function GameBoard({ box, gameDispatch }: Props): JSX.Element {
   );
 
   //
-  let boardJSX = boardState.map((e) => {
+  let boardJSX = state.boardState.map((e) => {
     let pointString = `${(e.col * RAD3 + (e.row * RAD3) / 2) * sideLength},${
       (0.5 + e.row * 1.5) * sideLength
     }`;
@@ -73,19 +47,16 @@ export function GameBoard({ box, gameDispatch }: Props): JSX.Element {
 
     return (
       <polygon
-        id={String(e.id)}
+        id={e.id}
         key={e.id}
-        className={`stroke-black stroke-2 ${translateOwner(
-          e.owner
-        )} cursor-pointer`}
+        className={`stroke-black stroke-2 cursor-pointer
+          ${translateOwner(e.owner)}`}
         points={pointString}
         onClick={(event) =>
           resolveTurn({
             id: event.currentTarget.id,
-            state: boardState,
-            setState: setBoardState,
-            playerNum: menuState.playerNum,
-            gameDispatch: gameDispatch,
+            state: state,
+            dispatch: dispatch,
           })
         }
       ></polygon>
@@ -108,11 +79,11 @@ export function GameBoard({ box, gameDispatch }: Props): JSX.Element {
 }
 
 // Returns the right class based on the player who owns the tile
-function translateOwner(owner: string): string {
-  switch (owner) {
-    case "green":
+function translateOwner(player: number) {
+  switch (player) {
+    case owner.player1:
       return "fill-player1-tile";
-    case "yellow":
+    case owner.player2:
       return "fill-player2-tile";
     default:
       return "fill-transparent";

@@ -1,15 +1,10 @@
-import { action, dispatchContext } from "../page";
-import { Button } from "../Utilities/Button";
 import { useContext } from "react";
+import { navStateProp } from "./MainMenu";
+import { Button } from "../Utilities/Components/Button";
+import { appContext } from "../Utilities/StateManager";
 
-interface Props {
-  setNavState: React.Dispatch<
-    React.SetStateAction<"title" | "player" | "difficulty">
-  >;
-}
-
-export function PlayerSelect({ setNavState }: Props) {
-  const dispatch = useContext(dispatchContext);
+export function PlayerSelect({ setNavState }: navStateProp) {
+  const { state, dispatch } = useContext(appContext);
   return (
     <section
       id="wrapper"
@@ -20,8 +15,8 @@ export function PlayerSelect({ setNavState }: Props) {
         text="1 Player"
         colorScheme="tertiary"
         onClick={() => {
-          dispatch({ type: "set-players", value: 1 });
-          setNavState("difficulty");
+          dispatch({ type: "vsAI", value: true });
+          setNavState("diff");
         }}
       />
       <Button
@@ -29,8 +24,8 @@ export function PlayerSelect({ setNavState }: Props) {
         text="2 Players"
         colorScheme="tertiary"
         onClick={() => {
-          dispatch({ type: "set-players", value: 2 });
-          setNavState("difficulty");
+          dispatch({ type: "vsAI", value: false });
+          setNavState("diff");
         }}
       />
     </section>

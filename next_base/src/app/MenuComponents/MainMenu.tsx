@@ -1,11 +1,15 @@
-import React, { useContext, useState, Dispatch } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { TitleScreen } from "./TitleScreen";
 import { PlayerSelect } from "./PlayerSelect";
 import { DifficultySelect } from "./DifficultySelect";
 
+export type navStateProp = {
+  setNavState: Dispatch<SetStateAction<"title" | "player" | "diff">>;
+};
+
 export function MainMenu() {
   let [navState, setNavState] = useState(
-    "title" as "title" | "player" | "difficulty"
+    "title" as "title" | "player" | "diff"
   );
 
   return (
@@ -19,9 +23,7 @@ export function MainMenu() {
       >
         {navState === "title" && <TitleScreen setNavState={setNavState} />}
         {navState === "player" && <PlayerSelect setNavState={setNavState} />}
-        {navState === "difficulty" && (
-          <DifficultySelect setNavState={setNavState} />
-        )}
+        {navState === "diff" && <DifficultySelect setNavState={setNavState} />}
       </div>
     </div>
   );
