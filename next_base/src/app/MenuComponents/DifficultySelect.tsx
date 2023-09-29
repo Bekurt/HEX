@@ -1,5 +1,5 @@
-import { dispatchContext } from "./page";
-import { Button } from "./Button";
+import { dispatchContext } from "../page";
+import { Button } from "../Utilities/Button";
 import { useContext } from "react";
 
 interface Props {

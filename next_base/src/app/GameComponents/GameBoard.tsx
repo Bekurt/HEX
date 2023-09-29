@@ -5,10 +5,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import { colorSides } from "./colorSides";
-import { generateLabels } from "./generateLabels";
-import { resolveTurn } from "./gameManagement";
-import { stateContext } from "./page";
+import { colorSides } from "../Utilities/colorSides";
+import { generateLabels } from "../Utilities/generateLabels";
+import { resolveTurn } from "../Utilities/gameManagement";
+import { stateContext } from "../page";
 
 export interface Tile {
   [key: string]: number | string;

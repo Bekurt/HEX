@@ -1,7 +1,7 @@
 "use client";
 
-import { MainMenu } from "./MainMenu";
-import { GameInterface } from "./GameInterface";
+import { MainMenu } from "./MenuComponents/MainMenu";
+import { GameInterface } from "./GameComponents/GameInterface";
 import { Dispatch, createContext, useReducer } from "react";
 
 const initialState: state = {
@@ -11,7 +11,7 @@ const initialState: state = {
 };
 
 export const stateContext = createContext<state>(initialState);
-export const dispatchContext = createContext<Dispatch<any>>(() => null);
+export const dispatchContext = createContext<Dispatch<action>>(() => null);
 
 export default function HomePage() {
   const [state, dispatch] = useReducer(reducer, initialState);

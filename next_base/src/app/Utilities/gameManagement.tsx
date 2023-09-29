@@ -1,4 +1,4 @@
-import { Tile } from "./GameBoard";
+import { Tile } from "../GameComponents/GameBoard";
 import { SetStateAction, Dispatch } from "react";
 import { shuffle } from "./shuffle";
 

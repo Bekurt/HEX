@@ -1,8 +1,10 @@
-import { useReducer, useRef } from "react";
+import { Dispatch, useContext, useReducer, useRef } from "react";
 import { BoardDisplay } from "./BoardDisplay";
-import { Button } from "./Button";
+import { Button } from "../Utilities/Button";
+import { dispatchContext } from "../page";
 
 export function GameInterface() {
+  const menuDispatch = useContext(dispatchContext);
   const dimRef = useRef(null);
   const [state, dispatch] = useReducer(gameReducer, {
     gameWon: false,
@@ -11,9 +13,12 @@ export function GameInterface() {
 
   return (
     <>
-      {state.gameWon && <WinNotification />}
+      {state.gameWon && <WinNotification dispatch={menuDispatch} />}
       <main id="game" className="w-full h-full flex">
-        <section id="game-side" className="h-full w-9/12 flex flex-col">
+        <section
+          id="game-side"
+          className="h-full w-9/12 flex flex-col overflow-hidden"
+        >
           <GameHeader />
           <div
             id="boundary"
@@ -23,7 +28,10 @@ export function GameInterface() {
             <BoardDisplay dimRef={dimRef} gameDispatch={dispatch} />
           </div>
         </section>
-        <section id="move-history" className="h-full w-3/12 flex flex-col">
+        <section
+          id="move-history"
+          className="h-full w-3/12 flex flex-col overflow-hidden"
+        >
           <HistoryHeader />
           <History moveArray={state.moveArray} />
         </section>
@@ -66,14 +74,21 @@ function History({ moveArray }: { moveArray: string[] }) {
   return (
     <div
       id="history-wrapper"
-      className="w-full h-[90%] flex-grow pt-3 bg-side-body"
+      className="w-full h-[90%] flex-grow pt-3 bg-side-body overflow-scroll"
     >
       {historyJSX}
     </div>
   );
 }
 
-function WinNotification() {
+function WinNotification({
+  dispatch,
+}: {
+  dispatch: Dispatch<{
+    type: "switch-mode" | "set-size" | "set-players";
+    value?: string | number;
+  }>;
+}) {
   return (
     <div
       id="modal-window"
@@ -103,7 +118,7 @@ function WinNotification() {
             id="back"
             text="Menu"
             colorScheme="warning"
-            onClick={() => null}
+            onClick={() => dispatch({ type: "switch-mode" })}
           />
         </div>
       </div>
