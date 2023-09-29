@@ -1,14 +1,15 @@
-import type { action } from "./page";
+import { action, dispatchContext } from "./page";
 import { Button } from "./Button";
+import { useContext } from "react";
 
 interface Props {
-  dispatch: React.Dispatch<action>;
   setNavState: React.Dispatch<
     React.SetStateAction<"title" | "player" | "difficulty">
   >;
 }
 
-export function PlayerSelect({ dispatch, setNavState }: Props) {
+export function PlayerSelect({ setNavState }: Props) {
+  const dispatch = useContext(dispatchContext);
   return (
     <section
       id="wrapper"

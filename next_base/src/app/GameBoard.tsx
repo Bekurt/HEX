@@ -1,7 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { colorSides } from "./colorSides";
 import { generateLabels } from "./generateLabels";
-import { postRenderOperations, resolveTurn } from "./gameManagement";
+import { resolveTurn } from "./gameManagement";
 import { stateContext } from "./page";
 
 export interface Tile {
@@ -17,10 +23,11 @@ interface Props {
     width: number;
     height: number;
   };
+  setGameWon: Dispatch<SetStateAction<boolean>>;
 }
 
 // Returns
-export function GameBoard({ box }: Props): JSX.Element {
+export function GameBoard({ box, setGameWon }: Props): JSX.Element {
   const menuState = useContext(stateContext);
   const size = menuState.boardSize;
   const emptyBoard: Tile[] = [];
@@ -33,11 +40,6 @@ export function GameBoard({ box }: Props): JSX.Element {
     });
   }
   const [boardState, setBoardState] = useState(emptyBoard);
-
-  // Fires the check for a winner after state change is rendered
-  useEffect(() => {
-    postRenderOperations(boardState, setBoardState, menuState.playerNum);
-  }, [boardState, menuState.playerNum]);
 
   const rowNum = Math.sqrt(boardState.length);
   const RAD3 = Math.sqrt(3);
@@ -82,6 +84,8 @@ export function GameBoard({ box }: Props): JSX.Element {
             id: event.currentTarget.id,
             state: boardState,
             setState: setBoardState,
+            playerNum: menuState.playerNum,
+            setGameWon: setGameWon,
           })
         }
       ></polygon>

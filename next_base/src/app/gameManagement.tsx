@@ -2,46 +2,43 @@ import { Tile } from "./GameBoard";
 import { SetStateAction, Dispatch } from "react";
 import { shuffle } from "./shuffle";
 
-type shortDisp = Dispatch<SetStateAction<Tile[]>>;
 interface resolveParams {
   id: string;
   state: Tile[];
-  setState: shortDisp;
+  setState: Dispatch<SetStateAction<Tile[]>>;
+  playerNum: number;
+  setGameWon: Dispatch<SetStateAction<boolean>>;
 }
 
-export function resolveTurn({ id, state, setState }: resolveParams) {
+export function resolveTurn({
+  id,
+  state,
+  setState,
+  playerNum,
+  setGameWon,
+}: resolveParams) {
   const thisTile = state.filter((e) => e.id === Number(id))[0];
   if (thisTile.owner !== "") {
     return;
   }
   const turn = state.filter((e) => e.owner !== "").length + 1;
   const player = turn % 2 === 0 ? "yellow" : "green";
-  setState((state) => {
-    const newState = state.map((e) => {
-      return e.id === thisTile.id ? { ...e, owner: player } : e;
-    });
-    return newState;
+  const newState = state.map((e) => {
+    return e.id === thisTile.id ? { ...e, owner: player } : e;
   });
-}
-
-export function postRenderOperations(
-  state: Tile[],
-  setState: shortDisp,
-  playerNum: number
-) {
-  const turn = state.filter((e) => e.owner !== "").length;
-  const player = turn % 2 === 0 ? "yellow" : "green";
-  const gameWon = checkWin({ state: state, player });
+  setState(newState);
+  const gameWon = checkWin({ state: newState, player });
   if (gameWon) {
-    // endGame(player);
-    console.log(player + " wins!");
+    setGameWon(true);
   } else {
     if (playerNum == 1 && player === "green") {
-      const aiChoice = aiMove(state, turn);
+      const aiChoice = aiMove(newState, turn);
       resolveTurn({
         id: String(aiChoice),
-        state: state,
+        state: newState,
         setState: setState,
+        playerNum: playerNum,
+        setGameWon: setGameWon,
       });
     }
   }

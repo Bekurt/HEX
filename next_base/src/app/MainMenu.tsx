@@ -1,14 +1,9 @@
-import React, { useState } from "react";
-import type { action } from "./page";
+import React, { useContext, useState, Dispatch } from "react";
 import { TitleScreen } from "./TitleScreen";
 import { PlayerSelect } from "./PlayerSelect";
 import { DifficultySelect } from "./DifficultySelect";
 
-interface Props {
-  dispatch: React.Dispatch<action>;
-}
-
-export function MainMenu({ dispatch }: Props) {
+export function MainMenu() {
   let [navState, setNavState] = useState(
     "title" as "title" | "player" | "difficulty"
   );
@@ -23,11 +18,9 @@ export function MainMenu({ dispatch }: Props) {
         className="w-full h-2/5 border border-black bg-secondary"
       >
         {navState === "title" && <TitleScreen setNavState={setNavState} />}
-        {navState === "player" && (
-          <PlayerSelect dispatch={dispatch} setNavState={setNavState} />
-        )}
+        {navState === "player" && <PlayerSelect setNavState={setNavState} />}
         {navState === "difficulty" && (
-          <DifficultySelect dispatch={dispatch} setNavState={setNavState} />
+          <DifficultySelect setNavState={setNavState} />
         )}
       </div>
     </div>
