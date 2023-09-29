@@ -19,7 +19,7 @@ export function resolveTurn({ id, state, dispatch }: resolveParams) {
   // Evaluate new state
   const turn = board.filter((e) => e.owner !== owner.none).length + 1;
   const player = turn % 2 === 0 ? owner.player2 : owner.player1;
-  const move = `${String.fromCharCode(65 + thisTile.col)}${thisTile.row}`;
+  const move = `${String.fromCharCode(65 + thisTile.col)}${thisTile.row + 1}`;
   const newBoard = board.map((e) => {
     return e.id === thisTile.id ? { ...e, owner: player } : e;
   });

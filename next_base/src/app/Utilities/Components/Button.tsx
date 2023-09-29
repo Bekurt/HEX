@@ -9,7 +9,7 @@ interface ButtonProps {
 
 export function Button({ id, text, colorScheme, onClick }: ButtonProps) {
   let className =
-    "w-48 sm:w-64 md:w-80 lg:w-96 m-3 p-1.5 rounded-lg hover:text-white text-black font-mono text-xl sm:text-2xl md:text-3xl";
+    "w-36 sm:w-40 md:w-48 lg:w-64 xl:w-96 m-3 p-1.5 rounded-lg hover:text-white text-black font-mono text-base sm:text-lg md:text-xl lg:text-2xl xl:text-4xl";
   className +=
     colorScheme === "tertiary"
       ? " bg-tertiary-normal hover:bg-tertiary-hover"

@@ -11,7 +11,7 @@ export function WinNotification() {
   return (
     <div
       id="modal-window"
-      className="h-full w-full bg-black bg-opacity-70 first-letter absolute z-10"
+      className="h-full w-full bg-black bg-opacity-70 absolute z-10"
     >
       <div
         id="wrapper"
@@ -19,13 +19,13 @@ export function WinNotification() {
       >
         <div
           id="modal-notification"
-          className="flex flex-wrap justify-center items-center w-1/2 h-1/3 rounded-3xl bg-secondary mx-auto"
+          className="flex flex-wrap justify-center items-center w-2/3 h-1/4 rounded-3xl mx-auto bg-secondary"
         >
           <span
             id="message"
-            className="w-full select-none text-black text-center text-6xl"
+            className="w-full select-none text-black text-center text-2xl lg:text-3xl xl:text-4xl"
           >
-            {`${currentPlayer} player won!`}
+            {currentPlayer} player won!
           </span>
           <Button
             id="reset"
