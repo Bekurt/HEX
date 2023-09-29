@@ -82,7 +82,6 @@ export function GameBoard({ box }: Props): JSX.Element {
             id: event.currentTarget.id,
             state: boardState,
             setState: setBoardState,
-            playerNum: menuState.playerNum,
           })
         }
       ></polygon>
@@ -107,9 +106,9 @@ export function GameBoard({ box }: Props): JSX.Element {
 // Returns the right class based on the player who owns the tile
 function translateOwner(owner: string): string {
   switch (owner) {
-    case "blue":
-      return "fill-player1-tile";
     case "green":
+      return "fill-player1-tile";
+    case "yellow":
       return "fill-player2-tile";
     default:
       return "fill-transparent";

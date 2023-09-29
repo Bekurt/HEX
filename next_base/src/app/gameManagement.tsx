@@ -7,15 +7,15 @@ interface resolveParams {
   id: string;
   state: Tile[];
   setState: shortDisp;
-  playerNum: number;
 }
-export function resolveTurn({ id, state, setState, playerNum }: resolveParams) {
+
+export function resolveTurn({ id, state, setState }: resolveParams) {
   const thisTile = state.filter((e) => e.id === Number(id))[0];
   if (thisTile.owner !== "") {
     return;
   }
   const turn = state.filter((e) => e.owner !== "").length + 1;
-  const player = turn % 2 === 0 ? "green" : "blue";
+  const player = turn % 2 === 0 ? "yellow" : "green";
   setState((state) => {
     const newState = state.map((e) => {
       return e.id === thisTile.id ? { ...e, owner: player } : e;
@@ -30,19 +30,18 @@ export function postRenderOperations(
   playerNum: number
 ) {
   const turn = state.filter((e) => e.owner !== "").length;
-  const player = turn % 2 === 0 ? "green" : "blue";
+  const player = turn % 2 === 0 ? "yellow" : "green";
   const gameWon = checkWin({ state: state, player });
   if (gameWon) {
     // endGame(player);
     console.log(player + " wins!");
   } else {
-    if (playerNum == 1 && player === "blue") {
+    if (playerNum == 1 && player === "green") {
       const aiChoice = aiMove(state, turn);
       resolveTurn({
         id: String(aiChoice),
         state: state,
         setState: setState,
-        playerNum: playerNum,
       });
     }
   }
@@ -50,13 +49,13 @@ export function postRenderOperations(
 
 interface winParams {
   state: Tile[];
-  player: "green" | "blue";
+  player: "yellow" | "green";
 }
 
 //Checks if the game has been won by current player: returns true if game is won
 function checkWin({ state, player }: winParams) {
   const size = Math.sqrt(state.length);
-  const check = player === "blue" ? "col" : "row";
+  const check = player === "green" ? "col" : "row";
   let playerTiles = state.filter((elem) => elem.owner === player);
   let startingTiles = playerTiles.filter((elem) => elem[check] === 0);
   let endingTiles = playerTiles.filter((elem) => elem[check] === size - 1);
@@ -127,18 +126,18 @@ function aiMove(state: Tile[], turn: number) {
     for (let index = 0; index < boardSimulated.length; index++) {
       if (boardSimulated[index].owner === "") {
         if (redLeft > 0) {
-          boardSimulated[index].owner = "green";
+          boardSimulated[index].owner = "yellow";
           redLeft--;
         } else {
-          boardSimulated[index].owner = "blue";
+          boardSimulated[index].owner = "green";
         }
       }
     }
-    let roundWon = checkWin({ state: boardSimulated, player: "green" });
+    let roundWon = checkWin({ state: boardSimulated, player: "yellow" });
     if (roundWon) {
       boardSimulated.forEach((e) => {
         let realTile = state.find((t) => t.id == e.id) as Tile;
-        if (e.owner === "green" && realTile.owner === "") {
+        if (e.owner === "yellow" && realTile.owner === "") {
           let index = winCounter.findIndex((w) => w.id == e.id);
           winCounter[index].winPercent++;
         }

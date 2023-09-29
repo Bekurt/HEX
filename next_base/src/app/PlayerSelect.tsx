@@ -1,4 +1,5 @@
 import type { action } from "./page";
+import { Button } from "./Button";
 
 interface Props {
   dispatch: React.Dispatch<action>;
@@ -13,26 +14,24 @@ export function PlayerSelect({ dispatch, setNavState }: Props) {
       id="wrapper"
       className="w-full h-full flex justify-center items-center flex-col"
     >
-      <button
+      <Button
         id="vsAI"
-        className="w-48 sm:w-64 md:w-80 lg:w-96 m-3 p-1.5 rounded-lg bg-tertiary-normal hover:bg-tertiary-hover hover:text-white text-black font-mono text-xl sm:text-2xl md:text-3xl"
+        text="1 Player"
+        colorScheme="tertiary"
         onClick={() => {
           dispatch({ type: "set-players", value: 1 });
           setNavState("difficulty");
         }}
-      >
-        1 Player
-      </button>
-      <button
+      />
+      <Button
         id="vsPlayer"
-        className="w-48 sm:w-64 md:w-80 lg:w-96 m-3 p-1.5 rounded-lg bg-tertiary-normal hover:bg-tertiary-hover hover:text-white text-black font-mono text-xl sm:text-2xl md:text-3xl"
+        text="2 Players"
+        colorScheme="tertiary"
         onClick={() => {
           dispatch({ type: "set-players", value: 2 });
           setNavState("difficulty");
         }}
-      >
-        2 Players
-      </button>
+      />
     </section>
   );
 }
