@@ -49,7 +49,7 @@ export function GameBoard({ box }: Box) {
       <polygon
         id={e.id}
         key={e.id}
-        className={`stroke-black stroke-2 cursor-pointer
+        className={`stroke-black stroke-2 cursor-pointer hover:fill-indigo-300
           ${translateOwner(e.owner)}`}
         points={pointString}
         onClick={(event) =>
