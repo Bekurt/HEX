@@ -49,7 +49,7 @@ export function GameBoard({ box }: Box) {
       <polygon
         id={e.id}
         key={e.id}
-        className={`stroke-black stroke-2 cursor-pointer hover:fill-indigo-300
+        className={`stroke-black stroke-2 cursor-pointer
           ${translateOwner(e.owner)}`}
         points={pointString}
         onClick={(event) =>
@@ -86,6 +86,6 @@ function translateOwner(player: number) {
     case owner.player2:
       return "fill-player2-tile";
     default:
-      return "fill-transparent";
+      return "fill-transparent hover:fill-indigo-300";
   }
 }
