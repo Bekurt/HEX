@@ -1,4 +1,4 @@
-import { Dispatch } from "react";
+import { Dispatch } from 'react';
 import { shuffle } from "./shuffle";
 import { Tile, action, owner, state } from "./StateManager";
 
@@ -33,12 +33,14 @@ export function resolveTurn({ id, state, dispatch }: resolveParams) {
     dispatch({ type: "win", value: true });
   } else {
     if (state.vsAI && player === owner.player1) {
-      const aiChoice = aiMove(newBoard, turn);
+      setTimeout(() => {
+        const aiChoice = aiMove(newBoard, turn);
       resolveTurn({
         id: aiChoice,
         state: { ...state, boardState: newBoard, moveArray: newHistory },
         dispatch: dispatch,
-      });
+        })
+      },0)
     }
   }
 }
@@ -101,7 +103,7 @@ function checkWin({ state, player }: winParams) {
 function aiMove(board: Tile[], turn: number) {
   // Monte-Carlo evaluation of the next best move
   let winCounter = board.map((e) => ({ id: e.id, winPercent: 0 }));
-  for (let index = 0; index < 2000; index++) {
+  for (let index = 0; index < 1500; index++) {
     let boardSimulated = board.map((e) => ({
       id: e.id,
       owner: e.owner,

@@ -19,7 +19,7 @@ export function GameInterface() {
             id="hint"
             color="bg-secondary"
             text="Try to connect the opposite sides of the board that match your color!
-       Green is first."
+       Player 1 is green."
           />
           <div
             id="boundary"
